@@ -1,0 +1,72 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *" # pick up changes in the tool repos
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with: { repository: AdityaMalu/algoscope, path: src/algoscope }
+      - uses: actions/checkout@v4
+        with: { repository: AdityaMalu/java-visualizer, path: src/java-visualizer }
+      - uses: actions/checkout@v4
+        with: { repository: AdityaMalu/DBVisualizer, path: src/DBVisualizer }
+      - uses: actions/checkout@v4
+        with: { repository: AdityaMalu/OSVisualizer, path: src/OSVisualizer }
+      - uses: actions/checkout@v4
+        with: { repository: AdityaMalu/backpressure, path: src/backpressure }
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+
+      - name: Build AlgoScope
+        run: python tools/make_site.py --out _site
+        working-directory: src/algoscope
+
+      - name: Build the steppers
+        run: |
+          for d in java-visualizer DBVisualizer OSVisualizer; do
+            (cd "src/$d" && npm ci && npm run build)
+          done
+
+      - name: Assemble the site
+        run: >
+          python scripts/assemble.py --out site
+          --algoscope src/algoscope/_site
+          --java src/java-visualizer/dist
+          --db src/DBVisualizer/dist
+          --os src/OSVisualizer/dist
+          --backpressure src/backpressure
+
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: site }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

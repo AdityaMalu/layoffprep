@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Prep · Aditya Malu</title>
+<meta name="description" content="Six interview-prep tools in one place: AlgoScope (DSA traces), Java, DB and OS Concepts Steppers, Backpressure (system design with a live simulator) and MachineCodingLab (LLD practice).">
+<meta property="og:title" content="Interview Prep · Aditya Malu">
+<meta property="og:description" content="DSA traces, Java internals, database and OS concepts, system design simulations and machine coding practice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2311202b'/%3E%3Ctext x='16' y='22' font-family='Georgia' font-size='17' font-weight='700' text-anchor='middle' fill='%23f2b880'%3Eam%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Karla:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Karla:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="fetch" href="data.json" crossorigin="anonymous">
+<style>
+  :root {
+    --bg: #11202b;
+    --bg-raise: #172a37;
+    --text: #c7d3dc;
+    --bright: #eef3f6;
+    --soft: #8497a6;
+    --line: #253b4a;
+    --accent: #f2b880;
+    --accent-dim: rgba(242, 184, 128, 0.12);
+    --ok: #6fd3a8;
+    --bad: #ff8a7a;
+    --mono: "Fira Code", Consolas, monospace;
+    --display: "Sora", "Segoe UI", sans-serif;
+    --body: "Karla", "Segoe UI", sans-serif;
+    --bar: 52px;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f3ee;
+    --bg-raise: #ffffff;
+    --text: #3d4a54;
+    --bright: #13232e;
+    --soft: #6f7d88;
+    --line: #e2dcd2;
+    --accent: #b85c1e;
+    --accent-dim: rgba(184, 92, 30, 0.10);
+    --ok: #12805c;
+    --bad: #c2412d;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 var(--body); overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* top bar */
+  .bar {
+    height: var(--bar); display: flex; align-items: center; gap: 8px;
+    padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--bg-raise);
+  }
+  .brand { font-family: var(--display); font-weight: 700; color: var(--bright); font-size: 15px; white-space: nowrap; padding: 6px 8px; }
+  .brand span { color: var(--accent); }
+  .tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 7px 12px; border-radius: 8px; white-space: nowrap; font-weight: 500; font-size: 15px; color: var(--soft);
+    transition: background .15s, color .15s;
+  }
+  .tab:hover { color: var(--bright); background: var(--accent-dim); }
+  .tab[aria-selected="true"] { color: var(--accent); background: var(--accent-dim); }
+  .tools { display: flex; gap: 2px; }
+  .icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; color: var(--soft); }
+  .icon:hover { color: var(--accent); background: var(--accent-dim); }
+  .icon svg { width: 18px; height: 18px; }
+  .icon[hidden] { display: none; }
+  .tools { position: relative; align-items: center; }
+  .acct {
+    display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px 0 9px; margin-right: 4px;
+    border: 1px solid var(--line); border-radius: 99px; font-size: 14px; font-weight: 500; color: var(--bright); white-space: nowrap;
+  }
+  .acct:hover { border-color: var(--accent); }
+  .acct[hidden] { display: none; }
+  .acct svg { width: 16px; height: 16px; }
+  .acct.in { padding: 0; width: 32px; justify-content: center; overflow: hidden; border-color: var(--accent); }
+  .acct img { width: 100%; height: 100%; object-fit: cover; }
+  .acct .initial { font: 700 14px var(--display); color: var(--accent); }
+  .acct-menu {
+    position: absolute; right: 0; top: 42px; z-index: 70; width: 260px; padding: 14px; border-radius: 12px;
+    background: var(--bg-raise); border: 1px solid var(--line); box-shadow: 0 16px 40px rgba(0,0,0,.35); font-size: 14px;
+  }
+  .acct-menu[hidden] { display: none; }
+  .acct-menu .who b { display: block; color: var(--bright); }
+  .acct-menu .who span { color: var(--soft); font-size: 13px; word-break: break-all; }
+  .acct-menu p { margin: 10px 0 12px; color: var(--text); font-size: 13px; }
+  .acct-menu button { color: var(--accent); font-weight: 700; }
+  .dsync { margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 13px; color: var(--soft); }
+  .dsync:empty { display: none; }
+  .linkish { color: var(--accent); font-weight: 700; padding: 0; }
+  .linkish:hover { text-decoration: underline; }
+  .tab .sm { display: none; }
+
+  /* panes */
+  .stage { position: relative; height: calc(100% - var(--bar)); }
+  .pane { position: absolute; inset: 0; }
+  .pane[hidden] { display: none; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; background: var(--bg); }
+
+  /* home */
+  .home { overflow-y: auto; padding: 48px 16px 64px; }
+  .home-inner { max-width: 1040px; margin: 0 auto; }
+  .home h1 { font-family: var(--display); color: var(--bright); font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; line-height: 1.15; margin: 0; }
+  .lede { color: var(--soft); max-width: 40em; margin: 12px 0 32px; font-size: 17px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 18px; }
+  .card {
+    display: flex; flex-direction: column; gap: 10px; text-align: left;
+    padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raise);
+    transition: border-color .15s, transform .15s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  /* live demos on the cards */
+  .demo {
+    position: relative; height: 204px; padding: 12px 14px; margin-bottom: 4px; overflow: hidden; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+    font: 12.5px/1.45 var(--mono); color: var(--text);
+  }
+  .demo .cap { display: flex; justify-content: space-between; gap: 10px; color: var(--soft); font-size: 11.5px; white-space: nowrap; }
+  .demo .cap > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+  .demo .cap b { color: var(--bright); font-weight: 500; }
+  .demo .cap .r { flex: none; }
+  .demo .note {
+    position: absolute; left: 14px; right: 14px; bottom: 10px; color: var(--soft); font: 13px/1.3 var(--body);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .demo .note b { color: var(--bright); font-weight: 700; }
+  .demo .ok, .demo .note b.ok { color: var(--ok); }
+  .demo .bad, .demo .note b.bad { color: var(--bad); }
+
+  /* binary search */
+  .arr { position: relative; margin-top: 44px; --gap: 6px; }
+  .cells { display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--gap); }
+  .cell {
+    height: 36px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px;
+    background: var(--bg-raise); color: var(--bright); font-weight: 500;
+    transition: background .3s, border-color .3s, opacity .3s, color .3s, transform .3s;
+  }
+  .cell.out { opacity: .28; }
+  .cell.mid { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); transform: translateY(-2px); }
+  .cell.found { border-color: var(--ok); background: var(--ok); color: var(--bg); }
+  .ptr {
+    position: absolute; width: calc((100% - 7 * var(--gap)) / 8); left: calc(var(--i, 0) * ((100% - 7 * var(--gap)) / 8 + var(--gap)));
+    text-align: center; font-size: 11px; white-space: nowrap;
+    transition: left .45s cubic-bezier(.3,.7,.3,1), opacity .25s;
+  }
+  .ptr.mid { top: -19px; color: var(--accent); }
+  .ptr.lo, .ptr.hi { top: 41px; color: var(--soft); }
+
+  /* heap and stack */
+  .code { margin-top: 8px; }
+  .code div { padding: 0 6px; border-radius: 0 4px 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background .25s, box-shadow .25s; }
+  .code div.cur { background: var(--accent-dim); box-shadow: inset 2px 0 0 var(--accent); color: var(--bright); }
+  .code i { font-style: normal; color: var(--soft); display: inline-block; width: 16px; }
+  .code .k { color: var(--accent); }
+  .mem { display: grid; grid-template-columns: 1fr 1.7fr; gap: 10px; margin-top: 10px; }
+  .mem .col { border: 1px dashed var(--line); border-radius: 7px; padding: 5px 8px; height: 58px; min-width: 0; }
+  .mem .h { font: 600 10px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin-bottom: 3px; white-space: nowrap; }
+  .slot { display: flex; justify-content: space-between; gap: 6px; }
+  .obj {
+    border: 1px solid var(--accent); border-radius: 6px; padding: 1px 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: opacity .45s, transform .45s, border-color .3s;
+  }
+  .obj.none { opacity: 0; transform: scale(.85); }
+  .obj.unreach { border-style: dashed; border-color: var(--bad); opacity: .75; }
+  .obj.gone { opacity: 0; transform: translateY(6px) scale(.9); }
+  .obj .e { color: var(--accent); }
+
+  /* round robin Gantt */
+  .rq { margin-top: 14px; display: flex; gap: 10px; align-items: center; }
+  .rq .h { font: 600 10px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+  .rq .q b { display: inline-block; border: 1px solid var(--line); border-radius: 6px; padding: 0 7px; margin-right: 4px; color: var(--bright); font-weight: 500; }
+  .gantt { position: relative; height: 34px; margin-top: 18px; border: 1px dashed var(--line); border-radius: 7px; }
+  .gantt .seg {
+    position: absolute; top: 3px; bottom: 3px; border-radius: 5px; display: grid; place-items: center;
+    color: var(--bg); font-weight: 600; font-size: 11.5px; opacity: 0; transform: scaleX(.2); transform-origin: left;
+    transition: opacity .3s, transform .45s cubic-bezier(.3,.7,.3,1);
+  }
+  .gantt .seg.on { opacity: 1; transform: none; }
+  .ticks { position: relative; height: 16px; margin-top: 3px; }
+  .ticks span { position: absolute; transform: translateX(-50%); font-size: 10.5px; color: var(--soft); }
+
+  /* system design: users → API → cache / DB */
+  .sdg { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1.3fr; align-items: center; margin-top: 24px; }
+  .sdn {
+    position: relative; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-raise); padding: 6px 8px;
+    color: var(--bright); text-align: center; font-weight: 500; transition: border-color .3s, opacity .4s, transform .4s, box-shadow .3s;
+  }
+  .sdn small { display: block; font-size: 10.5px; color: var(--soft); font-weight: 400; white-space: nowrap; }
+  .sdstack { display: flex; flex-direction: column; gap: 9px; }
+  .sdn.none { opacity: 0; transform: translateY(-6px) scale(.92); }
+  .sdn.new { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }
+  .sdn.on { border-color: var(--ok); }
+  .sdn.cold { border-color: #c98a2b; }
+  .sdn.down { opacity: .45; border-style: dashed; border-color: var(--bad); }
+  .sdn.down small { color: var(--bad); }
+  .sdn.hot { border-color: var(--bad); box-shadow: 0 0 0 2px color-mix(in srgb, var(--bad) 22%, transparent); }
+  .sdn.hot small { color: var(--bad); }
+  .sdbar { display: block; height: 4px; margin-top: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .sdbar i { display: block; height: 100%; width: 0; transition: width .5s, background .3s; }
+  .wire { position: relative; height: 2px; margin: 0 3px; background: var(--line); }
+  .wire::after { content: ''; position: absolute; top: -2px; left: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: sdflow 1s linear infinite; }
+  .wire.fast::after { animation-duration: .5s; }
+  .wire.w2.bad::after { background: var(--bad); }
+  @keyframes sdflow { to { left: calc(100% - 6px); } }
+  @media (prefers-reduced-motion: reduce) { .wire::after { animation: none; } }
+
+  /* B+ tree */
+  .tree { position: relative; height: 110px; margin-top: 16px; }
+  .tree svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .tree line { stroke: var(--line); stroke-width: 1.5; vector-effect: non-scaling-stroke; transition: stroke .3s; }
+  .tree line.on { stroke: var(--accent); stroke-width: 2.5; }
+  .node {
+    position: absolute; transform: translateX(-50%); display: flex; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--bg-raise); color: var(--bright); overflow: hidden; transition: border-color .3s, box-shadow .3s;
+  }
+  .node span { padding: 3px 6px; border-left: 1px solid var(--line); transition: background .3s, color .3s; }
+  .node span:first-child { border-left: 0; }
+  .node.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .node span.hit { background: var(--ok); color: var(--bg); }
+
+  /* test run */
+  .tests { display: grid; gap: 4px; margin-top: 8px; }
+  .t { display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
+  .t .d {
+    width: 13px; height: 13px; flex: none; border-radius: 50%; border: 1.5px solid var(--line);
+    display: grid; place-items: center; font: 700 8px/1 var(--body); color: var(--bg); transition: background .2s, border-color .2s;
+  }
+  .t.run .d { border-top-color: var(--accent); animation: spin .7s linear infinite; }
+  .t.pass .d { background: var(--ok); border-color: var(--ok); }
+  .t.pass .d::after { content: "\2713"; }
+  .t.fail .d { background: var(--bad); border-color: var(--bad); }
+  .t.fail .d::after { content: "\2715"; }
+  .t .nm { overflow: hidden; text-overflow: ellipsis; flex: none; }
+  .t.pass .nm { color: var(--bright); }
+  .t .m { color: var(--bad); font-size: 11px; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .diff { margin-top: 7px; font-size: 11.5px; opacity: 0; transition: opacity .3s; }
+  .diff.show { opacity: 1; }
+  .diff div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- home: hero, question of the day, progress ---------- */
+  .home {
+    background-image: radial-gradient(var(--line) 1px, transparent 1.2px);
+    background-size: 26px 26px; background-attachment: local;
+  }
+  .home-inner { max-width: 1120px; position: relative; z-index: 1; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: start; margin-bottom: 28px; }
+  .kicker { font: 600 12px var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 6px 0 10px; }
+  .home h1 span { color: var(--accent); }
+  .hero .lede { margin-bottom: 18px; }
+  .sortbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 14px; color: var(--soft);
+    padding: 10px 14px; border: 1px dashed var(--line); border-radius: 10px; background: var(--bg-raise);
+  }
+  .sortbar svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
+  .sortbar #sortHint { flex: 1 1 220px; }
+  .sortbar .score { margin-left: auto; font-family: var(--mono); font-size: 12.5px; color: var(--text); }
+  .sortbar .score b { color: var(--ok); font-weight: 500; }
+
+  .panel { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raise); padding: 18px 20px; }
+  .daily { position: relative; }
+  .dhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .dlabel { font: 700 13px var(--display); color: var(--bright); letter-spacing: .02em; }
+  .streak { display: inline-flex; align-items: center; gap: 5px; font: 600 13px var(--mono); color: var(--soft); padding: 3px 9px; border-radius: 99px; background: var(--bg); }
+  .streak.on { color: var(--accent); background: var(--accent-dim); }
+  .streak svg { width: 14px; height: 14px; }
+  .dsrc { font-size: 13px; color: var(--soft); margin-bottom: 6px; }
+  .dq { color: var(--bright); font-weight: 500; font-size: 16.5px; line-height: 1.45; margin-bottom: 12px; }
+  .dq code, .dwhy code, .dopt code { font: 13px var(--mono); background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  .dopts { display: grid; gap: 7px; }
+  .dopt {
+    text-align: left; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg);
+    font-size: 15px; line-height: 1.35; color: var(--text); transition: border-color .15s, background .15s, transform .15s;
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .dopt .l { font: 600 12px var(--mono); color: var(--soft); flex: none; }
+  .dopt:not(:disabled):hover { border-color: var(--accent); transform: translateX(2px); }
+  .dopt:disabled { cursor: default; }
+  .dopt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--bg)); color: var(--bright); }
+  .dopt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--bg)); }
+  .dopt.dim { opacity: .55; }
+  .dres { margin-top: 12px; font-size: 14.5px; }
+  .dres .verdict { font-weight: 700; }
+  .dres .verdict.ok { color: var(--ok); } .dres .verdict.bad { color: var(--bad); }
+  .dwhy { color: var(--text); }
+  .dacts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; font-size: 14px; }
+  .dacts .next { color: var(--soft); }
+  .dacts button.main { color: var(--accent); font-weight: 700; }
+  .dacts button:hover { text-decoration: underline; }
+  .dskel { height: 210px; border-radius: 8px; background: linear-gradient(90deg, var(--bg) 0%, var(--line) 50%, var(--bg) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; opacity: .5; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .progress { margin-bottom: 22px; }
+  .phead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 14px; }
+  .phead h2 { font: 700 17px var(--display); color: var(--bright); margin: 0; }
+  .phead .muted { color: var(--soft); font-size: 13.5px; }
+  .phead .cont { margin-left: auto; font-weight: 700; color: var(--accent); font-size: 14.5px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .phead .cont:hover { text-decoration: underline; }
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .tile {
+    display: flex; gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 10px;
+    background: var(--bg); border: 1px solid transparent; transition: border-color .15s;
+  }
+  .tile:hover { border-color: var(--line); }
+  .ring { width: 52px; height: 52px; flex: none; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 5; }
+  .ring .track { stroke: var(--line); }
+  .ring .val { stroke: var(--accent); stroke-linecap: round; transition: stroke-dasharray .8s cubic-bezier(.3,.7,.3,1); }
+  .tile .n { font: 700 18px var(--display); color: var(--bright); line-height: 1.2; }
+  .tile .n small { font: 500 13px var(--body); color: var(--soft); }
+  .tile .lbl { font-size: 13px; color: var(--text); line-height: 1.3; }
+  .tile .sub { font-size: 12px; color: var(--soft); line-height: 1.3; }
+
+  /* ---------- drag-to-sort concepts ---------- */
+  .float-layer { position: fixed; left: 0; right: 0; top: var(--bar); bottom: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+  .tray {
+    display: none; position: relative; height: 160px; margin: 0 0 18px; overflow: hidden;
+    border: 1px dashed var(--line); border-radius: 14px; background: color-mix(in srgb, var(--bg-raise) 55%, transparent);
+  }
+  .tray.on { display: block; }
+  .tray::before { content: "drifting concepts"; position: absolute; right: 12px; bottom: 8px; font: 11px var(--mono); color: var(--soft); opacity: .7; }
+  .chip {
+    position: absolute; left: 0; top: 0; pointer-events: auto; touch-action: none; user-select: none; -webkit-user-select: none; will-change: transform;
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 99px;
+    border: 1px solid var(--line); background: var(--bg-raise); color: var(--bright);
+    font: 500 13.5px var(--mono); white-space: nowrap; cursor: grab;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    transition: opacity .3s, box-shadow .2s, border-color .2s;
+  }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: .8; }
+  .tray .chip { box-shadow: 0 4px 12px rgba(0,0,0,.18); }
+  .chip.settle { transition: transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s; }
+  .chip:hover { border-color: var(--accent); }
+  .chip.armed { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .chip.dragging {
+    position: fixed; z-index: 50; cursor: grabbing; transition: none; pointer-events: none;
+    transform: scale(1.08) rotate(-2deg); box-shadow: 0 14px 34px rgba(0,0,0,.35); border-color: var(--accent);
+  }
+  .chip.enter, .chip.gone { opacity: 0; }
+
+  .card { position: relative; }
+  .card.drop-over { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-dim); transform: translateY(-3px); }
+  .card.got-it { border-color: var(--ok); animation: glow 1.1s ease-out; }
+  .card.nope { border-color: var(--bad); animation: shake .45s; }
+  .card.hint { border-color: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 20%, transparent); }
+  @keyframes glow { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent); } 100% { box-shadow: 0 0 0 18px transparent; } }
+  @keyframes shake { 20%, 60% { translate: -7px 0; } 40%, 80% { translate: 7px 0; } }
+  .badge {
+    position: absolute; top: -12px; right: 16px; z-index: 3; padding: 3px 10px; border-radius: 99px;
+    font: 700 12.5px var(--body); color: var(--bg); background: var(--bad); pointer-events: none;
+    animation: pop .3s ease-out;
+  }
+  @keyframes pop { from { transform: scale(.5); opacity: 0; } }
+  .dropzone {
+    display: none; position: absolute; inset: 0; z-index: 4; border-radius: 14px; border: 2px dashed var(--accent);
+    background: color-mix(in srgb, var(--bg) 70%, transparent); color: var(--bright); font: 700 16px var(--display);
+    place-items: center; padding: 20px; text-align: center;
+  }
+  body.arming .dropzone { display: grid; }
+  .reveal {
+    position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 2; padding: 10px 12px; border-radius: 9px;
+    background: var(--bg-raise); border: 1px solid var(--ok); box-shadow: 0 10px 28px rgba(0,0,0,.3);
+    font: 14px/1.4 var(--body); color: var(--text); cursor: default;
+    transform: translateY(130%); transition: transform .35s cubic-bezier(.3,.7,.3,1);
+  }
+  .reveal.show { transform: none; }
+  .reveal.hint { border-color: var(--accent); }
+  .reveal .t { font-weight: 700; color: var(--bright); padding-right: 22px; }
+  .reveal .t .ok { color: var(--ok); }
+  .reveal p { margin: 3px 0 6px; }
+  .reveal .open { color: var(--accent); font-weight: 700; font-size: 13.5px; }
+  .reveal .x { position: absolute; top: 4px; right: 6px; width: 24px; height: 24px; color: var(--soft); font-size: 17px; }
+  .spark {
+    position: fixed; width: 7px; height: 7px; border-radius: 50%; pointer-events: none; z-index: 60;
+    background: var(--c, var(--ok)); animation: spark .7s ease-out forwards;
+  }
+  @keyframes spark { to { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; } }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 20px; }
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .panel { padding: 16px; }
+    .tiles { grid-template-columns: 1fr; gap: 8px; }
+    .tile { padding: 8px 10px; }
+    .tile .ring { width: 42px; height: 42px; }
+    .tray { height: 190px; }
+    .tray .chip { font-size: 12.5px; padding: 7px 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .card h2 { font-family: var(--display); color: var(--bright); font-size: 19px; margin: 0; }
+  .card p { margin: 0; color: var(--text); }
+  .card .stat { color: var(--soft); font-size: 14px; }
+  .card .row { margin-top: auto; padding-top: 6px; display: flex; gap: 16px; font-size: 14px; }
+  .card .row .go { color: var(--accent); font-weight: 700; }
+  .card .row a { color: var(--soft); }
+  .card .row a:hover { color: var(--accent); }
+  .foot { margin-top: 32px; color: var(--soft); font-size: 14px; }
+  .foot a { color: var(--accent); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--bright); color: var(--bg); padding: 8px 16px; border-radius: 8px; font-weight: 500; transition: opacity .2s, transform .2s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 400px) { .tab { padding: 7px 3px !important; font-size: 12.5px !important; } .tabs { gap: 0; } .tools { gap: 2px; } }
+  @media (max-width: 640px) {
+    .brand .long { display: none; }
+    .tab { padding: 7px 8px; font-size: 14px; }
+    #srcBtn { display: none; }
+    .acct .t { display: none; }
+    .acct { padding: 0; width: 32px; justify-content: center; }
+    .tab .lg { display: none; }
+    .tab .sm { display: inline; }
+    .bar { padding: 0 6px; gap: 4px; }
+    .home { padding-top: 32px; }
+    .card { padding: 16px; }
+    .demo { padding: 10px; font-size: 11.5px; }
+    .demo .note { left: 10px; right: 10px; font-size: 12px; }
+    .arr { --gap: 4px; }
+    .node span { padding: 3px 4px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="https://adityamalu.github.io/" title="Back to adityamalu.github.io">am<span>/</span><span class="long" style="color:inherit">prep</span></a>
+  <nav class="tabs" role="tablist" aria-label="Tools" id="tabs"></nav>
+  <div class="tools">
+    <button type="button" class="acct" id="acctBtn" hidden></button>
+    <div class="acct-menu" id="acctMenu" hidden>
+      <div class="who"></div>
+      <p>Your daily streak and sort score sync to this account.</p>
+      <button type="button" id="signOutBtn">Sign out</button>
+    </div>
+    <button class="icon" id="copyBtn" type="button" title="Copy link to this view" aria-label="Copy link to this view">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+    </button>
+    <a class="icon" id="openBtn" target="_blank" rel="noopener" title="Open on its own" aria-label="Open this tool on its own page" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+    </a>
+    <a class="icon" id="srcBtn" target="_blank" rel="noopener" title="Source on GitHub" aria-label="Source on GitHub" hidden>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+  <section class="pane home" id="pane-home" role="tabpanel">
+    <div class="home-inner">
+      <div class="hero">
+        <div>
+          <p class="kicker">Backend interview prep</p>
+          <h1>Interview prep, <span>step by step</span></h1>
+          <p class="lede">Six tools I built while preparing for backend interviews: DSA, Java, databases, operating systems, system design and machine coding. Each one stays a separate app with its own repo, and they all open here with shareable links.</p>
+          <div class="sortbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a1.5 1.5 0 0 1 3 0v5M12 10V4a1.5 1.5 0 0 1 3 0v6M15 10V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L3.5 14a1.5 1.5 0 0 1 2.3-1.9L9 15V8a1.5 1.5 0 0 1 3 0"/></svg>
+            <span id="sortHint">Drag the floating concepts onto the tool they belong to.</span>
+            <span class="score" id="sortScore"></span>
+          </div>
+        </div>
+        <section class="panel daily" id="daily" aria-live="polite"><div class="dskel"></div></section>
+      </div>
+      <section class="panel progress" id="progress" aria-label="Your progress"></section>
+      <div class="tray" id="tray"></div>
+      <div class="grid" id="cards"></div>
+      <p class="foot">Made by <a href="https://adityamalu.github.io/">Aditya Malu</a>. Progress is saved in this browser. Signing in with Google also saves your daily streak and sort score to your account, and nothing else.</p>
+    </div>
+    <div class="float-layer" id="floatLayer"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const APPS = [
+    { key: 'algo', name: 'AlgoScope', short: 'Algo', path: '/algoscope/', repo: 'AdityaMalu/algoscope',
+      blurb: 'Animated traces of 159 DSA interview problems, recorded from real Java runs, with Python and C++ versions.',
+      stat: 'Arrays · graphs · DP · trees · and more' },
+    { key: 'java', name: 'Java Stepper', short: 'Java', full: 'Java Concepts Stepper', path: '/java-visualizer/', repo: 'AdityaMalu/java-visualizer',
+      blurb: 'Debugger-style walkthroughs of the JVM, collections, OOP and patterns, concurrency, Spring and JPA.',
+      stat: 'Quiz after every topic' },
+    { key: 'db', name: 'DB Stepper', short: 'DB', full: 'DB Concepts Stepper', path: '/DBVisualizer/', repo: 'AdityaMalu/DBVisualizer',
+      blurb: '71 database topics from SQL to distributed systems, with runnable SQLite examples, auto-checked exercises and quizzes.',
+      stat: 'Indexes · transactions · MVCC · sharding' },
+    { key: 'os', name: 'OS Stepper', short: 'OS', full: 'OS Concepts Stepper', path: '/OSVisualizer/', repo: 'AdityaMalu/OSVisualizer',
+      blurb: '59 operating-system topics from system calls to containers, with in-browser scheduling, paging, disk and deadlock simulators, auto-checked exercises and quizzes.',
+      stat: 'Scheduling · paging · deadlocks · sync' },
+    { key: 'sd', name: 'System Design', short: 'SD', full: 'Backpressure: System Design', path: '/backpressure/', repo: 'AdityaMalu/backpressure',
+      blurb: 'A 12-week system design course with a live traffic simulator. Drag in load balancers, caches, queues and databases, push traffic through them, then break things. 29 lessons with labs, from caching and sharding to designing WhatsApp and Uber.',
+      stat: 'Caching · queues · CAP · real-world designs' },
+    { key: 'lab', name: 'Machine Coding', short: 'LLD', full: 'MachineCodingLab', origin: 'https://machine-coding-lab.onrender.com', path: '/', repo: 'AdityaMalu/machine-coding-lab',
+      blurb: '18 machine coding and LLD tasks (rate limiter, LRU cache, job queue…). Edit in the browser and run real test suites in Java, Python, Go or C++.',
+      stat: 'Runs on a free server: the first load can take ~30 s' },
+  ];
+  // the hub is served from the site root on its own domain, or from /layoffprep/ on github.io: tools live beside it either way
+  const ROOT = location.pathname.replace(/[^/]*$/, '').replace(/\/$/, '');
+  for (const a of APPS) if (!a.origin) a.path = ROOT + a.path;
+  const byKey = Object.fromEntries(APPS.map(a => [a.key, a]));
+  const $ = id => document.getElementById(id);
+  const tabsEl = $('tabs'), stage = $('stage'), cards = $('cards');
+  const frames = {};
+  const reported = {}; // last path a cross-origin tool told us about (postMessage)
+  let current = 'home';
+
+  // theme: follow the portfolio's saved choice, else the OS
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    else if (matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme = 'light';
+  } catch (e) {}
+
+  // ---------- live demos on the Home cards: each is a list of frames plus a render(frame) over DOM built once
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const h = html => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content; };
+
+  const DEMOS = {
+    algo: (() => {
+      const A = [1, 3, 5, 8, 13, 21, 34, 55];
+      const frames = [];
+      for (const target of [21, 5, 34]) {
+        let lo = 0, hi = A.length - 1, steps = 0;
+        frames.push({ target, lo, hi, mid: null, note: `Search <b>a[${lo}..${hi}]</b> for ${target}`, ms: 900 });
+        while (lo <= hi) {
+          const mid = (lo + hi) >> 1;
+          steps++;
+          if (A[mid] === target) {
+            frames.push({ target, lo, hi, mid, note: `mid = ${mid}: a[${mid}] = ${A[mid]}` });
+            frames.push({ target, lo, hi, mid, found: true, note: `<b class="ok">Found ${target}</b> at index ${mid} in ${steps} steps, not ${mid + 1}`, ms: 2000 });
+            break;
+          }
+          const right = A[mid] < target;
+          frames.push({ target, lo, hi, mid, note: `a[${mid}] = ${A[mid]} ${right ? '<' : '>'} ${target}: drop the ${right ? 'left' : 'right'} half` });
+          if (right) lo = mid + 1; else hi = mid - 1;
+          frames.push({ target, lo, hi, mid: null, note: `<b>${right ? 'lo' : 'hi'}</b> moves to ${right ? lo : hi}`, ms: 800 });
+        }
+      }
+      return {
+        frames, still: 4,
+        build(el) {
+          el.append(h(`<div class="cap"><span>binary search</span><span class="r">target = <b class="tg"></b></span></div>
+            <div class="arr"><div class="cells">${A.map(v => `<div class="cell">${v}</div>`).join('')}</div>
+            <div class="ptr mid">mid ▾</div><div class="ptr lo">▴ lo</div><div class="ptr hi">▴ hi</div></div>
+            <div class="note"></div>`));
+          const cells = [...el.querySelectorAll('.cell')], P = k => el.querySelector('.ptr.' + k);
+          return f => {
+            el.querySelector('.tg').textContent = f.target;
+            cells.forEach((c, i) => {
+              c.className = 'cell' + (i < f.lo || i > f.hi ? ' out' : '') + (i === f.mid ? (f.found ? ' found' : ' mid') : '');
+            });
+            P('lo').style.setProperty('--i', f.lo);
+            P('hi').style.setProperty('--i', f.hi);
+            P('hi').style.opacity = f.lo === f.hi ? 0 : 1;
+            P('lo').textContent = f.lo === f.hi ? '▴ lo=hi' : '▴ lo';
+            P('mid').style.opacity = f.mid == null ? 0 : 1;
+            if (f.mid != null) P('mid').style.setProperty('--i', f.mid);
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+
+    java: {
+      frames: [
+        { line: 0, slot: '', obj: 'none', note: 'One object, from <b>new</b> to garbage collection', ms: 1000 },
+        { line: 1, slot: '→ #1', obj: 'alive', e: false, note: '<b>new</b> puts a HashMap on the heap; <b>m</b> points at it' },
+        { line: 2, slot: '→ #1', obj: 'alive', e: true, note: '<b>put</b> hashes "java" into one of its buckets' },
+        { line: 3, slot: 'null', obj: 'unreach', e: true, note: 'Nothing points at #1 now: <b class="bad">unreachable</b>', ms: 1600 },
+        { line: 4, slot: 'null', obj: 'gone', e: true, note: '<b class="ok">The GC reclaims #1</b> and frees its memory', ms: 1900 },
+      ],
+      still: 3,
+      build(el) {
+        el.append(h(`<div class="cap"><span>Main.java</span><span class="r">JVM memory</span></div>
+          <div class="code">
+            <div><i>1</i>Map&lt;String,Integer&gt; m = <span class="k">new</span> HashMap&lt;&gt;();</div>
+            <div><i>2</i>m.put("java", 21);</div>
+            <div><i>3</i>m = <span class="k">null</span>;</div>
+            <div><i>4</i>System.gc();</div>
+          </div>
+          <div class="mem">
+            <div class="col"><div class="h">Stack · main()</div><div class="slot"><span>m</span><span class="v">—</span></div></div>
+            <div class="col"><div class="h">Heap</div><div class="obj none">#1 HashMap <span class="e"></span></div></div>
+          </div>
+          <div class="note"></div>`));
+        const lines = [...el.querySelectorAll('.code div')], v = el.querySelector('.slot .v'), o = el.querySelector('.obj');
+        return f => {
+          lines.forEach((d, i) => d.classList.toggle('cur', i === f.line - 1));
+          v.textContent = f.slot || '—';
+          v.className = 'v' + (f.slot === 'null' ? ' bad' : f.slot ? ' ok' : '');
+          o.className = 'obj ' + f.obj;
+          o.querySelector('.e').textContent = f.e ? '{java=21}' : '{}';
+          el.querySelector('.note').innerHTML = f.note;
+        };
+      },
+    },
+
+    db: (() => {
+      const LEAVES = [[10, 15, 20], [40, 45, 50], [70, 72, 80]];
+      const frames = [];
+      for (const [key, leaf] of [[45, 1], [72, 2], [15, 0]]) {
+        const why = leaf === 0 ? `${key} < 30` : leaf === 1 ? `30 ≤ ${key} < 60` : `${key} ≥ 60`;
+        frames.push({ key, step: 0, note: `Look up <b>id = ${key}</b> with the index`, ms: 900 });
+        frames.push({ key, step: 1, leaf, note: `Root page: ${why}, so follow pointer ${leaf + 1}` });
+        frames.push({ key, step: 2, leaf, note: `Read leaf page ${leaf + 1}`, ms: 900 });
+        frames.push({ key, step: 3, leaf, note: `<b class="ok">Found in 2 page reads</b>, no full table scan`, ms: 1900 });
+      }
+      return {
+        frames, still: 3,
+        build(el) {
+          const xs = [17, 50, 83];
+          el.append(h(`<div class="cap"><span>SELECT * FROM users WHERE id = <b class="k"></b></span><span class="r">B+ tree</span></div>
+            <div class="tree">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">${xs.map(x => `<line x1="50" y1="24" x2="${x}" y2="70"/>`).join('')}</svg>
+              <div class="node root" style="left:50%;top:0"><span>30</span><span>60</span></div>
+              ${LEAVES.map((l, i) => `<div class="node leaf" style="left:${xs[i]}%;top:77px">${l.map(k => `<span>${k}</span>`).join('')}</div>`).join('')}
+            </div>
+            <div class="note"></div>`));
+          const root = el.querySelector('.root'), leaves = [...el.querySelectorAll('.leaf')], edges = [...el.querySelectorAll('line')];
+          return f => {
+            el.querySelector('.cap .k').textContent = f.key;
+            root.classList.toggle('on', f.step >= 1);
+            edges.forEach((e, i) => e.classList.toggle('on', f.step >= 2 && i === f.leaf));
+            leaves.forEach((l, i) => {
+              l.classList.toggle('on', f.step >= 2 && i === f.leaf);
+              [...l.children].forEach(sp => sp.classList.toggle('hit', f.step >= 3 && i === f.leaf && +sp.textContent === f.key));
+            });
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+
+    os: (() => {
+      // round robin, quantum 2: P1 = 5, P2 = 3, P3 = 1 (all arrive at 0)
+      const SEG = [['P1', 0, 2], ['P2', 2, 4], ['P3', 4, 5], ['P1', 5, 7], ['P2', 7, 8], ['P1', 8, 9]];
+      const Q = [['P2', 'P3', 'P1'], ['P3', 'P1', 'P2'], ['P1', 'P2'], ['P2', 'P1'], ['P1'], []];
+      const NOTE = ['<b>P1</b> runs one 2 ms slice, then goes to the back of the queue', '<b>P2</b> gets its turn: nobody waits long', '<b>P3</b> needs 1 ms and finishes early', '<b>P1</b> again: round robin is fair', '<b>P2</b> finishes', '<b class="ok">All done at t = 9</b>, average wait 3.33 ms'];
+      const frames = [{ n: 0, note: 'Round robin, quantum 2 ms: three processes share one CPU', ms: 1100 }];
+      SEG.forEach((_, i) => frames.push({ n: i + 1, note: NOTE[i], ms: i === SEG.length - 1 ? 2400 : 1250 }));
+      return {
+        frames, still: 6,
+        build(el) {
+          const col = { P1: 'var(--accent)', P2: 'var(--ok)', P3: '#c98a2b' };
+          el.append(h(`<div class="cap"><span>algo: RR · quantum: 2</span><span class="r">CPU scheduler</span></div>
+            <div class="rq"><span class="h">ready queue</span><span class="q"></span></div>
+            <div class="gantt">${SEG.map(([p, a, b]) => `<div class="seg" style="left:${a / 9 * 100}%;width:${(b - a) / 9 * 100}%;background:${col[p]}">${p}</div>`).join('')}</div>
+            <div class="ticks">${[0, 2, 4, 5, 7, 8, 9].map(t => `<span style="left:${t / 9 * 100}%">${t}</span>`).join('')}</div>
+            <div class="note"></div>`));
+          const segs = [...el.querySelectorAll('.seg')], q = el.querySelector('.q');
+          return f => {
+            segs.forEach((g, i) => g.classList.toggle('on', i < f.n));
+            const rq = f.n ? Q[f.n - 1] : ['P1', 'P2', 'P3'];
+            q.innerHTML = rq.length ? rq.map(p => `<b>${p}</b>`).join(' ') : '<span class="ok">empty</span>';
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+
+    sd: (() => {
+      // the caching lab in miniature: the DB saturates, a cache fixes it, the cache dies, coalescing saves the cold start
+      const F = (cache, db, hit, p99, note, ms, wire = '') => ({ cache, db, hit, p99, note, ms, wire });
+      const frames = [
+        F('none', 40, 0, '120 ms', 'Users send <b>3k reads/s</b> through the API to one database', 1300),
+        F('none', 78, 0, '480 ms', 'Traffic climbs to 8k/s and the database runs hot', 1300, 'fast'),
+        F('none', 100, 0, '2.4 s', '<b class="bad">Database saturation:</b> queries queue faster than they drain', 2000, 'fast bad'),
+        F('new', 100, 0, '2.4 s', 'Add a <b>Redis</b> cache in front of the database', 1300, 'fast'),
+        F('on', 22, 95, '90 ms', '<b class="ok">95% of reads hit the cache.</b> The database relaxes.', 2000, 'fast'),
+        F('down', 100, 0, '3.1 s', '💥 The cache crashes: every read falls through to the DB', 1800, 'fast bad'),
+        F('cold', 64, 60, '310 ms', 'It restarts cold; <b>request coalescing</b> stops a stampede', 1600, 'fast'),
+        F('on', 22, 95, '90 ms', '<b class="ok">Recovered.</b> Now try it with real traffic.', 2400, 'fast'),
+      ];
+      return {
+        frames, still: 4,
+        build(el) {
+          el.append(h(`<div class="cap"><span>lab: cache it · Backpressure</span><span class="r">p99 <b class="p99"></b></span></div>
+            <div class="sdg">
+              <div class="sdn">Users<small>clients</small></div><div class="wire"></div>
+              <div class="sdn">API<small>4 servers</small></div><div class="wire w2"></div>
+              <div class="sdstack">
+                <div class="sdn sdc">Redis<small class="hit"></small></div>
+                <div class="sdn sdb">Postgres<small class="ld"></small><span class="sdbar"><i></i></span></div>
+              </div>
+            </div>
+            <div class="note"></div>`));
+          const c = el.querySelector('.sdc'), d = el.querySelector('.sdb'), bar = el.querySelector('.sdbar i'), wires = el.querySelectorAll('.wire');
+          return f => {
+            c.className = 'sdn sdc ' + f.cache;
+            c.querySelector('.hit').textContent = f.cache === 'down' ? 'DOWN' : f.cache === 'none' || f.cache === 'new' ? 'cache' : `hit ${f.hit}%`;
+            const hot = f.db >= 95, warm = f.db >= 70;
+            d.className = 'sdn sdb' + (hot ? ' hot' : '');
+            d.querySelector('.ld').textContent = hot ? 'SATURATED' : `load ${f.db}%`;
+            bar.style.width = f.db + '%';
+            bar.style.background = hot ? 'var(--bad)' : warm ? '#c98a2b' : 'var(--ok)';
+            wires.forEach(w => { w.className = 'wire' + (w.classList.contains('w2') ? ' w2' : '') + (f.wire ? ' ' + f.wire : ''); });
+            el.querySelector('.p99').textContent = f.p99;
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+
+    lab: (() => {
+      const T = ['allowsBurstUpToCapacity', 'refillsOverTime', 'rejectsWhenBucketEmpty', 'isThreadSafe'];
+      const frames = [], st = T.map(() => 'idle');
+      const push = (extra, ms) => frames.push({ st: [...st], ...extra, ms });
+      push({ run: 1, note: 'Run the tests against your <b>RateLimiter</b>' }, 900);
+      T.forEach((_, i) => {
+        st[i] = 'run'; push({ run: 1, note: 'Running tests…' }, 450);
+        st[i] = i === 1 ? 'fail' : 'pass'; push({ run: 1, note: 'Running tests…' }, 350);
+      });
+      push({ run: 1, sum: '3/4 passed', bad: true, note: '<b class="bad">1 failing:</b> the bucket overfills after a long idle' }, 2000);
+      push({ run: 1, sum: '3/4 passed', bad: true, diff: true, note: 'Fix: cap the refill at <b>capacity</b>' }, 2100);
+      T.forEach((_, i) => { st[i] = 'idle'; });
+      push({ run: 2, diff: true, note: 'Run them again…' }, 500);
+      T.forEach((_, i) => {
+        st[i] = 'run'; push({ run: 2, diff: true, note: 'Running tests…' }, 350);
+        st[i] = 'pass'; push({ run: 2, diff: true, note: 'Running tests…' }, 250);
+      });
+      push({ run: 2, sum: '4/4 passed', diff: true, note: '<b class="ok">All green.</b> Build it, break it, fix it.' }, 2500);
+      return {
+        frames, still: 10,
+        build(el) {
+          el.append(h(`<div class="cap"><span>RateLimiterTest · Java</span><span class="r sum"></span></div>
+            <div class="tests">${T.map(n => `<div class="t"><span class="d"></span><span class="nm">${n}</span><span class="m"></span></div>`).join('')}</div>
+            <div class="diff"><div class="bad">- tokens += elapsed * rate;</div><div class="ok">+ tokens = Math.min(capacity, tokens + elapsed * rate);</div></div>
+            <div class="note"></div>`));
+          const rows = [...el.querySelectorAll('.t')], sum = el.querySelector('.sum');
+          return f => {
+            rows.forEach((r, i) => {
+              r.className = 't ' + f.st[i];
+              r.querySelector('.m').textContent = f.st[i] === 'fail' ? 'expected ≤ 5 tokens, was 7' : '';
+            });
+            sum.textContent = f.sum || 'run ' + f.run;
+            sum.className = 'r sum' + (f.sum ? (f.bad ? ' bad' : ' ok') : '');
+            el.querySelector('.diff').classList.toggle('show', !!f.diff);
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+  };
+
+  // a demo advances only while the Home tab is showing, the page is visible and the card is on screen
+  const onScreen = new WeakMap();
+  const io = 'IntersectionObserver' in window
+    ? new IntersectionObserver(es => es.forEach(e => onScreen.set(e.target, e.isIntersecting)), { threshold: 0.3 })
+    : null;
+  function startDemo(el, demo) {
+    const render = demo.build(el), F = demo.frames;
+    if (reduceMotion) { render(F[demo.still]); return; }
+    let i = 0;
+    render(F[0]);
+    if (io) io.observe(el);
+    const tick = () => {
+      if (current !== 'home' || document.hidden || (io && !onScreen.get(el))) return setTimeout(tick, 400);
+      i = (i + 1) % F.length;
+      render(F[i]);
+      setTimeout(tick, F[i].ms || 1300);
+    };
+    setTimeout(tick, F[0].ms || 1300);
+  }
+
+  // tabs + home cards
+  const mkTab = (key, label, short) => {
+    const b = document.createElement('button');
+    b.className = 'tab'; b.type = 'button'; b.role = 'tab'; b.id = 'tab-' + key;
+    b.innerHTML = `<span class="lg">${label}</span><span class="sm">${short || label}</span>`; b.onclick = () => show(key);
+    tabsEl.appendChild(b);
+  };
+  mkTab('home', 'Home');
+  for (const a of APPS) {
+    mkTab(a.key, a.name, a.short);
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.dataset.key = a.key;
+    c.innerHTML = `<button type="button" class="dropzone"></button><div class="demo" aria-hidden="true" title="Open ${a.full || a.name}"></div><h2>${a.full || a.name}</h2><p>${a.blurb}</p><p class="stat">${a.stat}</p>
+      <div class="row"><button type="button" class="go">Open here →</button>
+      <a href="${(a.origin || '') + a.path}" target="_blank" rel="noopener">Own page ↗</a>
+      <a href="https://github.com/${a.repo}" target="_blank" rel="noopener">Source</a></div>`;
+    c.querySelector('.go').onclick = c.querySelector('.demo').onclick = () => show(a.key);
+    cards.appendChild(c);
+    startDemo(c.querySelector('.demo'), DEMOS[a.key]);
+  }
+
+  // URL format: /prep/?a=<key>[&p=<sub/path/>]#<the tool's own hash>
+  function readUrl() {
+    const q = new URLSearchParams(location.search);
+    const key = byKey[q.get('a')] ? q.get('a') : 'home';
+    const sub = (q.get('p') || '').replace(/^\/+/, '').replace(/\.\./g, '');
+    return { key, sub, hash: location.hash };
+  }
+  function writeUrl(key, sub, hash) {
+    let url = location.pathname;
+    if (key !== 'home') {
+      const q = new URLSearchParams({ a: key });
+      if (sub) q.set('p', sub);
+      url += '?' + q.toString() + (hash || '');
+    }
+    if (url !== location.pathname + location.search + location.hash) history.replaceState(null, '', url);
+  }
+
+  // where is the tool's iframe right now (same origin on Pages)
+  function innerState(key) {
+    const f = frames[key];
+    if (!f) return null;
+    if (byKey[key].origin) {
+      if (reported[key] != null) return { sub: reported[key].replace(/^\/+/, ''), hash: '' };
+      const u = readUrl(); // nothing reported yet: trust the link we were opened with
+      return u.key === key ? { sub: u.sub, hash: '' } : null;
+    }
+    try {
+      const l = f.contentWindow.location;
+      const base = byKey[key].path;
+      if (!l.pathname.startsWith(base)) return null;
+      let sub = l.pathname.slice(base.length);
+      if (sub === 'index.html') sub = '';
+      return { sub, hash: l.hash };
+    } catch (e) { return null; } // cross-origin (e.g. local preview)
+  }
+  function sync() {
+    if (current === 'home') return writeUrl('home');
+    const s = innerState(current);
+    if (s) { writeUrl(current, s.sub, s.hash); rememberLast(current, s); }
+    else writeUrl(current, readUrl().key === current ? readUrl().sub : '', readUrl().key === current ? location.hash : '');
+    updateTools();
+  }
+
+  function frameFor(key, sub, hash) {
+    if (frames[key]) return frames[key];
+    const a = byKey[key];
+    const pane = document.createElement('section');
+    pane.className = 'pane'; pane.id = 'pane-' + key; pane.role = 'tabpanel'; pane.hidden = true;
+    const f = document.createElement('iframe');
+    f.title = a.full || a.name;
+    f.allow = 'clipboard-write; fullscreen';
+    f.src = (a.origin || '') + a.path + (sub || '') + (hash || '');
+    f.addEventListener('load', () => {
+      try {
+        f.contentWindow.addEventListener('hashchange', sync);
+        f.contentWindow.addEventListener('popstate', sync);
+      } catch (e) {}
+      if (current === key) sync();
+    });
+    pane.appendChild(f);
+    stage.appendChild(pane);
+    return (frames[key] = f);
+  }
+
+  function show(key, sub, hash) {
+    current = key;
+    if (key !== 'home') frameFor(key, sub, hash);
+    for (const p of stage.children) p.hidden = p.id !== 'pane-' + key;
+    for (const t of tabsEl.children) t.setAttribute('aria-selected', String(t.id === 'tab-' + key));
+    $('tab-' + key).scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    document.title = key === 'home' ? 'Interview Prep · Aditya Malu' : (byKey[key].full || byKey[key].name) + ' · Interview Prep';
+    sync();
+    if (key === 'home') { renderProgress(); if (mode) layout(); }
+    if (key !== 'home') try { frames[key].contentWindow.focus(); } catch (e) {}
+  }
+
+  function updateTools() {
+    const a = byKey[current];
+    $('openBtn').hidden = $('srcBtn').hidden = !a;
+    if (!a) return;
+    const s = innerState(current);
+    $('openBtn').href = (a.origin || '') + a.path + (s ? s.sub + s.hash : '');
+    $('srcBtn').href = 'https://github.com/' + a.repo;
+  }
+
+  // tools on another origin (the lab) report their path with postMessage
+  addEventListener('message', e => {
+    const a = APPS.find(x => x.origin === e.origin);
+    if (a && e.data && e.data.type === 'hub:progress' && Number.isInteger(e.data.solved) && Number.isInteger(e.data.total)) {
+      store.set('prep:lab', { solved: e.data.solved, total: e.data.total, lang: String(e.data.lang || '').slice(0, 20) });
+      return;
+    }
+    if (!a || !e.data || e.data.type !== 'hub:path' || typeof e.data.path !== 'string') return;
+    if (!/^\/[\w\/-]*$/.test(e.data.path)) return;
+    reported[a.key] = e.data.path;
+    if (current === a.key) sync();
+  });
+
+  // the tools update their hash with replaceState, which fires no event, so also poll the visible one
+  setInterval(() => { if (current !== 'home' && !document.hidden) sync(); }, 700);
+
+  const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1600); };
+  $('copyBtn').onclick = async () => {
+    sync();
+    try { await navigator.clipboard.writeText(location.href); toast('Link copied'); }
+    catch (e) { prompt('Copy this link:', location.href); }
+  };
+
+  // keyboard: Alt+0..6 switches tabs
+  addEventListener('keydown', e => {
+    if (!e.altKey || e.ctrlKey || e.metaKey) return;
+    const k = ['home', ...APPS.map(a => a.key)][+e.key];
+    if (k) { e.preventDefault(); show(k); }
+  });
+
+  // ---------- storage (every access guarded: private windows and blocked storage just lose the feature)
+  const store = {
+    get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+  // prep/data.json: quiz banks and topic lists from the steppers, AlgoScope problems, lab projects (tools/build_prep_data.py)
+  let DATA = null;
+  const dataReady = fetch('data.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => (DATA = d)).catch(() => null);
+
+  /** Open a tool at a specific place, even when its tab is already loaded somewhere else. */
+  function openAt(key, sub = '', hash = '') {
+    const a = byKey[key], f = frames[key], url = (a.origin || '') + a.path + sub + hash;
+    if (!f) return show(key, sub, hash);
+    try {
+      if (a.origin) f.src = url;
+      else {
+        const w = f.contentWindow;
+        if (w.location.pathname === a.path + sub && key !== 'algo') { w.location.hash = hash; w.location.reload(); } // steppers read the hash on load
+        else w.location.replace(url);
+      }
+    } catch (e) { f.src = url; }
+    show(key);
+  }
+
+  /** What a deep link points at, in words: "6.5 MVCC: row versions…", "Two Sum", "Rate Limiter". */
+  function titleFor(key, sub, hash) {
+    if (!DATA) return '';
+    if (key === 'algo') { const p = DATA.algo.find(x => '#' + x[0] === hash); return p ? p[1] : ''; }
+    if (key === 'lab') { const p = DATA.lab.find(x => 'p/' + x[0] === sub.replace(/\/$/, '')); return p ? p[1] : ''; }
+    const t = (DATA.steppers[key] || []).find(x => '#' + x.id === hash);
+    return t ? `${t.no} ${t.title}` : '';
+  }
+  function rememberLast(key, s) {
+    if (!s.sub && !s.hash) return;
+    const prev = store.get('prep:last', {});
+    if (prev.key !== key || prev.sub !== s.sub || prev.hash !== s.hash) store.set('prep:last', { key, sub: s.sub, hash: s.hash });
+  }
+
+  // ---------- question of the day
+  const flame = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.5-1.6 5.3-3 7.3C7.6 11.2 7 12.7 7 14.5a5 5 0 0 0 10 0c0-1.8-.8-3.4-1.8-4.6-.3 1.4-1 2.3-2 2.6.6-2.9.2-6.6-1.2-10.5Z"/></svg>';
+  const dayStr = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const dayNum = s => Math.round(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 864e5);
+  const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  let POOL = null;
+  function pool() {
+    if (POOL || !DATA) return POOL;
+    POOL = [];
+    for (const key of ['java', 'db', 'os', 'sd']) for (const t of DATA.steppers[key] || [])
+      t.quiz.forEach((q, i) => { if (q[4] !== 'H') POOL.push({ key, t, q, i }); });
+    return POOL;
+  }
+  /** Days in a row answered correctly; a wrong answer or a missed day starts it again. */
+  function streakNow() {
+    const s = store.get('prep:daily', {});
+    return s.last && dayNum(dayStr()) - dayNum(s.last) <= 1 ? s.streak || 0 : 0;
+  }
+  function renderDaily(item) {
+    const el = $('daily');
+    if (!item) { el.innerHTML = `<p class="dsrc">The question of the day couldn't load. Try again later.</p>`; return; }
+    const today = dayStr(), saved = store.get('prep:daily', {});
+    const answered = saved.today && saved.today.date === today ? saved.today : null;
+    const [q, opts, ans, why] = item.q, app = byKey[item.key];
+    const order = opts.map((_, i) => i);
+    const r = rng(dayNum(today));
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const st = streakNow();
+    el.innerHTML = `<div class="dhead"><span class="dlabel">Question of the day</span>
+        <span class="streak${st ? ' on' : ''}" title="Days in a row you've answered the question of the day correctly">${flame}${st} day${st === 1 ? '' : 's'}</span></div>
+      <div class="dsrc">${esc(app.full)} · ${esc(item.t.no)} ${esc(item.t.title)}</div>
+      <div class="dq">${q}</div>
+      <div class="dopts">${order.map((oi, k) => `<button type="button" class="dopt" data-i="${oi}"><span class="l">${'ABCD'[k]}</span><span>${opts[oi]}</span></button>`).join('')}</div>
+      <div class="dres" hidden></div>
+      <p class="dsync" id="dsync">${syncNote()}</p>`;
+    const finish = (pick, fresh) => {
+      el.querySelectorAll('.dopt').forEach(b => {
+        const i = +b.dataset.i; b.disabled = true;
+        b.classList.add(i === ans ? 'right' : i === pick ? 'wrong' : 'dim');
+      });
+      const ok = pick === ans, res = el.querySelector('.dres');
+      res.hidden = false;
+      res.innerHTML = `<span class="verdict ${ok ? 'ok' : 'bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> <span class="dwhy">${why}</span>
+        <div class="dacts"><button type="button" class="main learn">Learn this topic →</button><span class="next">Next question tomorrow</span></div>`;
+      res.querySelector('.learn').onclick = () => openAt(item.key, '', '#' + item.t.id);
+      if (fresh) {
+        const s = store.get('prep:daily', {});
+        const gap = s.last ? dayNum(today) - dayNum(s.last) : 99;
+        s.streak = !ok ? 0 : gap === 1 ? (s.streak || 0) + 1 : 1;
+        s.last = today;
+        s.best = Math.max(s.best || 0, s.streak);
+        s.today = { date: today, pick, ok };
+        store.set('prep:daily', s);
+        pushCloud();
+        const n = s.streak, badge = el.querySelector('.streak');
+        badge.classList.toggle('on', n > 0); badge.innerHTML = `${flame}${n} day${n === 1 ? '' : 's'}`;
+      }
+    };
+    el.querySelectorAll('.dopt').forEach(b => b.onclick = () => finish(+b.dataset.i, true));
+    if (answered) finish(answered.pick, false);
+  }
+  function todays() { const P = pool(); return P && P.length ? P[(dayNum(dayStr()) * 7919) % P.length] : null; }
+  dataReady.then(() => renderDaily(todays()));
+
+  // ---------- progress across the tools (the three same-origin tools share this site's storage)
+  function ring(frac) {
+    const C = 2 * Math.PI * 21, f = Math.max(0, Math.min(1, frac || 0));
+    return `<svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle class="track" cx="26" cy="26" r="21"/><circle class="val" cx="26" cy="26" r="21" stroke-dasharray="${(f * C).toFixed(1)} ${C.toFixed(1)}"/></svg>`;
+  }
+  function quizStats(key, prefix) {
+    const best = store.get(prefix + '-quiz-best-v1', {}), topics = (DATA && DATA.steppers[key]) || [];
+    let quizzed = 0, aced = 0;
+    for (const t of topics) {
+      const b = best[t.id];
+      if (b === undefined) continue;
+      quizzed++;
+      if (b >= Math.min(3, t.quiz.length)) aced++;
+    }
+    return { quizzed, aced, total: topics.length };
+  }
+  function renderProgress() {
+    const el = $('progress');
+    if (!DATA) { dataReady.then(d => d && renderProgress()); return; }
+    const viewed = store.get('algoscope:viewed', []).length, nAlgo = DATA.algo.length;
+    const jv = quizStats('java', 'jv'), db = quizStats('db', 'dbv'), os = quizStats('os', 'osv');
+    const solved = k => Object.values(store.get(k, {})).reduce((n, a) => n + (Array.isArray(a) ? a.length : 0), 0);
+    const ex = solved('dbv-ex-done-v1'), osEx = solved('osv-ex-done-v1');
+    const lab = store.get('prep:lab', null), last = store.get('prep:last', null);
+    // Backpressure keeps passed labs under backpressure.v1 → completed (same origin, so readable here)
+    const sdDone = Object.keys((store.get('backpressure.v1', {}) || {}).completed || {}).length;
+    const sdTotal = ((DATA.steppers.sd || []).length) || 29;
+    const tiles = [
+      { key: 'algo', f: viewed / nAlgo, n: viewed, of: nAlgo, lbl: 'problems traced', sub: 'in AlgoScope' },
+      { key: 'java', f: jv.quizzed / jv.total, n: jv.quizzed, of: jv.total, lbl: 'Java topics quizzed', sub: `${jv.aced} aced` },
+      { key: 'db', f: db.quizzed / db.total, n: db.quizzed, of: db.total, lbl: 'DB topics quizzed', sub: `${db.aced} aced · ${ex} exercises solved` },
+      { key: 'os', f: os.total ? os.quizzed / os.total : 0, n: os.quizzed, of: os.total || 59, lbl: 'OS topics quizzed', sub: `${os.aced} aced · ${osEx} exercises solved` },
+      { key: 'sd', f: sdDone / sdTotal, n: sdDone, of: sdTotal, lbl: 'system design labs passed', sub: sdDone ? 'in Backpressure' : 'Pass a lab to start' },
+      lab ? { key: 'lab', f: lab.solved / (lab.total || 1), n: lab.solved, of: lab.total, lbl: 'lab projects solved', sub: lab.lang ? `in ${lab.lang}` : '' }
+          : { key: 'lab', f: 0, n: '–', of: DATA.lab.length, lbl: 'lab projects solved', sub: 'Open the lab once to sync' },
+    ];
+    let cont = '';
+    if (last && byKey[last.key]) {
+      const what = titleFor(last.key, last.sub || '', last.hash || '');
+      cont = `<button type="button" class="cont" id="contBtn">Continue: ${esc(byKey[last.key].name)}${what ? ' · ' + esc(what) : ''} →</button>`;
+    }
+    el.innerHTML = `<div class="phead"><h2>Your progress</h2><span class="muted">from all six tools, saved in this browser</span>${cont}</div>
+      <div class="tiles">${tiles.map(t => `<button type="button" class="tile" data-key="${t.key}">${ring(t.f)}
+        <span><span class="n">${t.n}<small> / ${t.of}</small></span><br><span class="lbl">${t.lbl}</span><br><span class="sub">${esc(t.sub)}</span></span></button>`).join('')}</div>`;
+    el.querySelectorAll('.tile').forEach(b => b.onclick = () => show(b.dataset.key));
+    if (cont) $('contBtn').onclick = () => openAt(last.key, last.sub || '', last.hash || '');
+  }
+
+  // ---------- drag the floating concepts onto the tool they belong to
+  // [label, tool, deep link (hash for AlgoScope and the steppers, path for the lab), one-line fact]
+  const CONCEPTS = [
+    ['Trapping rain water', 'algo', '#trapping-rain-water', 'Two pointers: water above a bar is min(max left, max right) minus its height.'],
+    ['Monotonic stack', 'algo', '#daily-temperatures', 'Keep a stack of unresolved days; each warmer day pops the ones it answers.'],
+    ["Dijkstra's shortest path", 'algo', '#network-delay-time', 'Always settle the closest unvisited node next, using a min-heap.'],
+    ['Topological sort', 'algo', '#course-schedule-ii', "Kahn's algorithm: repeatedly take nodes with no incoming edges."],
+    ['Union-Find', 'algo', '#redundant-connection', 'The first edge joining two nodes already in one set closes a cycle.'],
+    ['Backtracking: N-Queens', 'algo', '#n-queens', 'Place a queen per row; undo the move when no column is safe.'],
+    ['Trie', 'algo', '#implement-trie-prefix-tree', 'One node per character, so prefix lookups cost O(length).'],
+    ["Kadane's algorithm", 'algo', '#maximum-subarray', 'Extend the running sum, or start over when it goes negative.'],
+    ['Edit distance', 'algo', '#edit-distance', 'dp[i][j] = cheapest of insert, delete or replace from smaller prefixes.'],
+    ['Sliding window maximum', 'algo', '#sliding-window-maximum', 'A deque of indexes with decreasing values gives O(n).'],
+    ['volatile', 'java', '#t4-6', 'Guarantees visibility and ordering, not atomicity: count++ still races.'],
+    ['Garbage collection', 'java', '#t1-4', 'Objects die young: generational GCs collect the young space often and cheaply.'],
+    ['Virtual threads', 'java', '#t4-17', 'Java 21: millions of cheap threads that unmount from carriers while blocked.'],
+    ['CompletableFuture', 'java', '#t4-14', 'Chain async steps with thenApply / thenCompose instead of blocking on get().'],
+    ['Integer cache', 'java', '#t1-7', 'Integer.valueOf caches -128..127, so == works there and then silently fails.'],
+    ['Type erasure', 'java', '#t2-10', 'List<String> and List<Integer> are the same class at runtime.'],
+    ['Fail-fast iterator', 'java', '#t2-6', 'modCount changes mid-loop throw ConcurrentModificationException.'],
+    ['@Transactional', 'java', '#t5-4', 'Works through a proxy, so calling it from the same class skips the transaction.'],
+    ['Decorator pattern', 'java', '#t3-7g', 'Wrap an object to add behaviour without subclassing it.'],
+    ['equals / hashCode', 'java', '#t2-3', 'Override one without the other and HashMap lookups break.'],
+    ['MVCC', 'db', '#t6-5', 'Readers see a snapshot of row versions, so they never block writers.'],
+    ['B+ tree index', 'db', '#t4-2', 'Fanout in the hundreds keeps 100M rows within 3–4 page reads.'],
+    ['Window functions', 'db', '#t2-2', 'OVER (PARTITION BY …) ranks rows without collapsing them like GROUP BY.'],
+    ['Two-phase commit', 'db', '#t8-6', 'Prepare everywhere, then commit; a stuck coordinator blocks everyone.'],
+    ['Write-ahead log', 'db', '#t7-1', 'Log the change before the page: crash recovery replays the log.'],
+    ['Consistent hashing', 'db', '#t8-4', 'Adding a node moves only about 1/n of the keys.'],
+    ['Third normal form', 'db', '#t3-4', 'Every non-key column depends on the key, the whole key and nothing but the key.'],
+    ['Raft', 'db', '#t8-7', 'A leader is elected per term and log entries commit on a majority.'],
+    ['LSM tree', 'db', '#t4-7', 'Buffer writes in memory, flush sorted runs, merge them later.'],
+    ['Write skew', 'db', '#t6-7', 'Two transactions read the same rows and write different ones; only SERIALIZABLE stops it.'],
+    ['Round robin', 'os', '#t3-4', 'Each process gets one time quantum, then goes to the back of the ready queue.'],
+    ["Belady's anomaly", 'os', '#t7-2', 'Under FIFO, more page frames can cause more page faults.'],
+    ["Banker's algorithm", 'os', '#t5-3', 'Grant a request only if some order still lets every process finish.'],
+    ['Copy-on-write fork', 'os', '#t7-5', 'Parent and child share pages read-only until one of them writes.'],
+    ['Zombie process', 'os', '#t1-4', 'Exited but not yet reaped: only its pid and exit status remain.'],
+    ['Priority inversion', 'os', '#t5-5', 'High waits for low, which medium preempts; priority inheritance fixes it.'],
+    ['TLB', 'os', '#t6-4', 'A tiny cache of page translations; locality keeps the hit ratio near 99%.'],
+    ['Thrashing', 'os', '#t7-4', 'Working sets exceed RAM, so processes page instead of computing.'],
+    ['epoll', 'os', '#t9-2', 'One thread waits on thousands of sockets and wakes only for the ready ones.'],
+    ['Condition variable', 'os', '#t4-5', 'Always wait in a while loop: wakeups can be spurious or stale.'],
+    ['Cache stampede', 'sd', '#/caching', 'A hot key expires and thousands of misses hit the DB at once; coalesce them.'],
+    ["Little's law", 'sd', '#/latency-throughput', 'In-flight = arrival rate × time held, so one slow call can drain a whole thread pool.'],
+    ['Circuit breaker', 'sd', '#/resilience', 'Stop calling a failing dependency, fail fast, and probe again later.'],
+    ['CAP theorem', 'sd', '#/cap', 'During a partition you keep consistency or availability, never both.'],
+    ['Read-your-writes', 'sd', '#/eventual-consistency', 'Right after a user writes, read their data from the primary so they see the change.'],
+    ['Consumer groups', 'sd', '#/kafka', 'Each partition goes to one consumer per group, so partitions cap parallelism.'],
+    ['Fan-out on write', 'sd', '#/instagram', "Push posts into followers' timelines; pull celebrity posts at read time instead."],
+    ['Transactional outbox', 'sd', '#/event-driven', 'Write the row and the event in one transaction; a relay publishes the event.'],
+    ['Gray failure', 'sd', '#/load-balancing', 'A slow node that still passes health checks; outlier detection ejects it.'],
+    ['RPO and RTO', 'sd', '#/disaster-recovery', 'How much data you can afford to lose, and how long you can be down.'],
+    ['Idempotency key', 'sd', '#/payments', 'Every retry carries the same key, so the customer is charged once.'],
+    ['Token bucket', 'lab', 'p/rate-limiter', 'Refill tokens over time and spend one per request; bursts up to capacity.'],
+    ['Base62 short codes', 'lab', 'p/url-shortener', 'Encode a counter or hash in [0-9a-zA-Z] for short, unique links.'],
+    ['Retry with backoff', 'lab', 'p/job-queue', 'Wait longer after each failure and add jitter so retries don’t stampede.'],
+    ['Percentage rollout', 'lab', 'p/feature-flag', 'Hash the user id into 100 buckets so each user stays in their cohort.'],
+    ['Threaded replies', 'lab', 'p/comments-replies', 'Store parent ids, then build the tree in one pass.'],
+    ['Reset tokens', 'lab', 'p/password-reset', 'Single-use, short-lived, and only a hash of the token is stored.'],
+    ['TTL + LRU eviction', 'lab', 'p/ttl-lru-cache', 'Expire stale entries, evict the least recently used when full.'],
+    ['Leaderboard ranking', 'lab', 'p/leaderboard', 'Ties, pagination and score updates without re-sorting everything.'],
+    ['Double booking', 'lab', 'p/reservation-service', 'Two requests both see the slot free; lock or use a unique constraint.'],
+    ['File deduplication', 'lab', 'p/file-deduplication', 'Group by size first, then hash only the files that could match.'],
+  ];
+  const linkOf = c => c[1] === 'lab' ? { sub: c[2], hash: '' } : { sub: '', hash: c[2] };
+  const layer = $('floatLayer'), tray = $('tray');
+  const score = Object.assign({ sorted: 0, streak: 0, best: 0 }, store.get('prep:sort', {}));
+  const showScore = () => {
+    $('sortScore').innerHTML = score.sorted ? `sorted <b>${score.sorted}</b> · streak ${score.streak} · best ${score.best}` : '';
+  };
+  showScore();
+  let deck = [], mode = null, armed = null;
+  const draw = () => {
+    if (!deck.length) {
+      const onBoard = new Set([...document.querySelectorAll('.chip')].map(ch => ch.dataset.i));
+      deck = CONCEPTS.map((_, i) => i).filter(i => !onBoard.has(String(i)));
+      for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    }
+    return deck.pop();
+  };
+
+  // ---- wandering: each chip drifts on a slowly turning heading, bounces off the edges of its zone,
+  // steers away from its neighbours and almost stops under the pointer so it's easy to grab
+  const moving = [];
+  let zones = [];
+  const box = () => mode === 'float' ? layer : tray;
+  const target = () => mode === 'float' ? 20 : innerWidth < 600 ? 4 : 5;
+  function computeZones() {
+    if (mode === 'float') {
+      const content = Math.min(1120, innerWidth - 32), g = (innerWidth - content) / 2, h = layer.clientHeight;
+      zones = [{ x0: 10, y0: 12, x1: g - 16, y1: h - 12 }, { x0: innerWidth - g + 16, y0: 12, x1: innerWidth - 10, y1: h - 12 }];
+    } else zones = [{ x0: 6, y0: 6, x1: tray.clientWidth - 6, y1: tray.clientHeight - 6 }];
+  }
+  const zoneOf = m => zones[m.z % zones.length];
+  function clampInto(m) {
+    const Z = zoneOf(m);
+    m.x = Math.min(Math.max(m.x, Z.x0), Math.max(Z.x0, Z.x1 - m.w));
+    m.y = Math.min(Math.max(m.y, Z.y0), Math.max(Z.y0, Z.y1 - m.h));
+  }
+  const put = m => { m.ch.style.transform = `translate3d(${m.x.toFixed(1)}px, ${m.y.toFixed(1)}px, 0)`; };
+  const turn = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+  let lastT = 0;
+  function step(t) {
+    const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
+    if (current === 'home' && !document.hidden && !reduceMotion) {
+      for (const m of moving) {
+        if (m.held) continue;
+        const Z = zoneOf(m);
+        m.a += (Math.random() - 0.5) * 3 * dt;
+        for (const o of moving) {
+          if (o === m || o.held || o.z % zones.length !== m.z % zones.length) continue;
+          const dx = m.x + m.w / 2 - (o.x + o.w / 2), dy = m.y + m.h / 2 - (o.y + o.h / 2), d = Math.hypot(dx, dy);
+          if (d > 0 && d < 90) m.a += turn(Math.atan2(dy, dx), m.a) * 2 * dt;
+        }
+        const sp = m.sp * (m.hover ? 0.08 : 1);
+        m.x += Math.cos(m.a) * sp * dt; m.y += Math.sin(m.a) * sp * dt;
+        if (m.x < Z.x0) { m.x = Z.x0; m.a = Math.PI - m.a; }
+        else if (m.x > Z.x1 - m.w) { m.x = Math.max(Z.x0, Z.x1 - m.w); m.a = Math.PI - m.a; }
+        if (m.y < Z.y0) { m.y = Z.y0; m.a = -m.a; }
+        else if (m.y > Z.y1 - m.h) { m.y = Math.max(Z.y0, Z.y1 - m.h); m.a = -m.a; }
+      }
+      // wide chips can overlap even when their centres are far apart: push overlapping pairs apart
+      for (let i = 0; i < moving.length; i++) for (let j = i + 1; j < moving.length; j++) {
+        const p = moving[i], q = moving[j];
+        if (p.held || q.held || p.z % zones.length !== q.z % zones.length) continue;
+        const ox = Math.min(p.x + p.w, q.x + q.w) - Math.max(p.x, q.x) + 6, oy = Math.min(p.y + p.h, q.y + q.h) - Math.max(p.y, q.y) + 6;
+        if (ox <= 0 || oy <= 0) continue;
+        const k = Math.min(1, 60 * dt);
+        if (ox < oy) { const s = (p.x < q.x ? -1 : 1) * ox / 2 * k; p.x += s; q.x -= s; }
+        else { const s = (p.y < q.y ? -1 : 1) * oy / 2 * k; p.y += s; q.y -= s; }
+        clampInto(p); clampInto(q);
+      }
+      for (const m of moving) if (!m.held) put(m);
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  function addChip() {
+    if (moving.length >= target()) return;
+    const i = draw(), c = CONCEPTS[i];
+    const ch = document.createElement('button');
+    ch.type = 'button'; ch.className = 'chip enter'; ch.dataset.i = i;
+    ch.textContent = c[0];
+    ch.setAttribute('aria-label', `Concept: ${c[0]}. Press to pick it up, then choose a tool card.`);
+    box().appendChild(ch);
+    const left = moving.filter(m => m.z === 0).length;
+    const m = { ch, z: mode === 'float' && left > moving.length - left ? 1 : 0, a: Math.random() * Math.PI * 2, sp: 18 + Math.random() * 18, w: ch.offsetWidth, h: ch.offsetHeight };
+    const Z = zoneOf(m);
+    m.x = Z.x0 + Math.random() * Math.max(0, Z.x1 - Z.x0 - m.w);
+    m.y = Z.y0 + Math.random() * Math.max(0, Z.y1 - Z.y0 - m.h);
+    ch._m = m; moving.push(m); put(m);
+    ch.addEventListener('pointerenter', () => { m.hover = true; });
+    ch.addEventListener('pointerleave', () => { m.hover = false; });
+    wireChip(ch);
+    requestAnimationFrame(() => requestAnimationFrame(() => ch.classList.remove('enter')));
+  }
+  function removeChip(ch) {
+    const k = moving.indexOf(ch._m);
+    if (k >= 0) moving.splice(k, 1);
+    ch.remove();
+  }
+  function layout() {
+    if (current !== 'home' && mode) return; // zones need the Home tab on screen; redone when it shows
+    const content = Math.min(1120, innerWidth - 32), gutter = (innerWidth - content) / 2;
+    const want = gutter >= 230 ? 'float' : 'pond';
+    $('sortHint').textContent = want === 'float'
+      ? 'Grab a floating concept and drop it on the tool it belongs to.'
+      : 'Grab a drifting concept and drop it on the tool it belongs to, or tap it and then tap a card.';
+    if (want !== mode) {
+      const keep = moving.map(m => m.ch.dataset.i);
+      moving.length = 0; layer.innerHTML = ''; tray.innerHTML = '';
+      mode = want;
+      tray.classList.toggle('on', mode === 'pond');
+      computeZones();
+      deck = deck.filter(i => !keep.includes(String(i)));
+      for (let k = 0; k < target(); k++) addChip();
+    } else {
+      computeZones();
+      for (const m of moving) { m.w = m.ch.offsetWidth; m.h = m.ch.offsetHeight; clampInto(m); put(m); }
+      while (moving.length < target()) addChip();
+    }
+  }
+
+  // pointer drag (mouse, pen and touch); a press without movement picks the chip up for tap-to-place
+  function wireChip(ch) {
+    let drag = null;
+    ch.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      const r = ch.getBoundingClientRect();
+      drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false, over: null };
+      ch._m.held = true;
+      try { ch.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    ch.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved) {
+        if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 6) return;
+        drag.moved = true; disarm();
+        ch.style.width = ch.offsetWidth + 'px';
+        ch.style.transform = '';
+        ch.classList.add('dragging');
+      }
+      ch.style.left = e.clientX - drag.dx + 'px';
+      ch.style.top = e.clientY - drag.dy + 'px';
+      const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.card[data-key]') || null;
+      if (card !== drag.over) { drag.over?.classList.remove('drop-over'); card?.classList.add('drop-over'); drag.over = card; }
+    });
+    const end = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const d = drag; drag = null;
+      if (!d.moved) { if (armed !== ch) ch._m.held = false; return; }
+      ch._dragged = true; setTimeout(() => { ch._dragged = false; }, 0);
+      d.over?.classList.remove('drop-over');
+      ch.classList.remove('dragging');
+      ch.style.width = ''; ch.style.left = ''; ch.style.top = '';
+      const cx = e.clientX - d.dx + ch._m.w / 2, cy = e.clientY - d.dy + ch._m.h / 2;
+      if (d.over && e.type === 'pointerup') judge(ch, d.over.dataset.key, e.clientX, e.clientY, cx, cy);
+      else goHome(ch, cx, cy);
+    };
+    ch.addEventListener('pointerup', end);
+    ch.addEventListener('pointercancel', end);
+    ch.addEventListener('click', e => {
+      e.preventDefault();
+      if (ch._dragged) return;
+      armed === ch ? disarm() : arm(ch);
+    });
+  }
+  /** Back into its zone, gliding from where it was let go (cx, cy: its centre on screen). */
+  function goHome(ch, cx, cy) {
+    const m = ch._m;
+    if (!m) return;
+    if (cx != null) {
+      const r = box().getBoundingClientRect();
+      m.x = cx - r.left - m.w / 2; m.y = cy - r.top - m.h / 2;
+      put(m); void ch.offsetWidth;
+    }
+    clampInto(m);
+    ch.classList.add('settle'); put(m);
+    setTimeout(() => { ch.classList.remove('settle'); m.held = armed === ch; }, 460);
+  }
+  function arm(ch) {
+    disarm(); armed = ch; ch.classList.add('armed'); ch._m.held = true;
+    document.body.classList.add('arming');
+    document.querySelectorAll('.dropzone').forEach(z => { z.textContent = `Drop “${ch.textContent}” here`; });
+  }
+  function disarm() {
+    if (armed) { armed.classList.remove('armed'); armed._m.held = false; }
+    armed = null;
+    document.body.classList.remove('arming');
+  }
+  document.querySelectorAll('.card[data-key] .dropzone').forEach(z => z.addEventListener('click', e => {
+    if (!armed) return;
+    const ch = armed, r = z.getBoundingClientRect();
+    disarm();
+    judge(ch, z.closest('.card').dataset.key, r.left + r.width / 2, r.top + r.height / 3);
+  }));
+  addEventListener('keydown', e => { if (e.key === 'Escape') disarm(); });
+
+  const cardOf = key => document.querySelector(`.card[data-key="${key}"]`);
+  function flash(card, cls, ms) { card.classList.remove(cls); void card.offsetWidth; card.classList.add(cls); setTimeout(() => card.classList.remove(cls), ms); }
+  function sparks(x, y) {
+    if (reduceMotion) return;
+    const colors = ['var(--ok)', 'var(--accent)', 'var(--bright)'];
+    for (let k = 0; k < 14; k++) {
+      const s = document.createElement('span'), a = (k / 14) * Math.PI * 2, d = 40 + Math.random() * 50;
+      s.className = 'spark';
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      s.style.setProperty('--dx', Math.cos(a) * d + 'px'); s.style.setProperty('--dy', Math.sin(a) * d + 'px');
+      s.style.setProperty('--c', colors[k % 3]);
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 800);
+    }
+  }
+  function reveal(card, c, kind) {
+    const demo = card.querySelector('.demo');
+    demo.querySelector('.reveal')?.remove();
+    const el = document.createElement('div');
+    const tool = byKey[c[1]];
+    el.className = 'reveal ' + kind;
+    el.innerHTML = `<div class="t">${kind === 'ok' ? `<span class="ok">✓</span> ${esc(c[0])} belongs here` : `${esc(c[0])} lives here, in ${esc(tool.full || tool.name)}`}</div>
+      <p>${esc(c[3])}</p><button type="button" class="open">Open “${esc(c[0])}” →</button><button type="button" class="x" aria-label="Close">×</button>`;
+    el.addEventListener('click', e => e.stopPropagation());
+    el.querySelector('.open').onclick = () => { const l = linkOf(c); openAt(c[1], l.sub, l.hash); };
+    el.querySelector('.x').onclick = () => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); };
+    demo.appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+    clearTimeout(card._rt);
+    card._rt = setTimeout(() => { if (!el.matches(':hover')) { el.classList.remove('show'); setTimeout(() => el.remove(), 400); } }, 9000);
+  }
+  function judge(ch, key, x, y, cx, cy) {
+    const c = CONCEPTS[+ch.dataset.i], card = cardOf(key);
+    if (c[1] === key) {
+      score.sorted++; score.streak++; score.best = Math.max(score.best, score.streak);
+      flash(card, 'got-it', 1200);
+      sparks(x, y);
+      reveal(card, c, 'ok');
+      ch.classList.add('gone');
+      setTimeout(() => { removeChip(ch); addChip(); }, 320);
+    } else {
+      score.streak = 0;
+      flash(card, 'nope', 600);
+      const b = document.createElement('span');
+      b.className = 'badge'; b.textContent = `✗ It's ${byKey[c[1]].name}`;
+      card.appendChild(b); setTimeout(() => b.remove(), 1500);
+      goHome(ch, cx, cy);
+      const right = cardOf(c[1]), rr = right.getBoundingClientRect();
+      flash(right, 'hint', 3200);
+      reveal(right, c, 'hint');
+      if (rr.top < 0 || rr.bottom > innerHeight) setTimeout(() => right.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' }), 450);
+    }
+    store.set('prep:sort', score);
+    showScore();
+    pushCloud();
+  }
+  let rz;
+  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => current === 'home' && layout(), 150); });
+  layout();
+
+  // ---------- optional Google sign-in (Firebase): keeps the daily streak and the sort score on every browser.
+  // Guests keep them in this browser only. Firestore rules (firestore.rules) let each user read and write only users/<their uid>.
+  const FIREBASE = {
+    apiKey: 'AIzaSyD2UF1y0pqaJhDmexzBdixS3YFIgElD_fw',
+    authDomain: 'interviewstepper.firebaseapp.com',
+    projectId: 'interviewstepper',
+    appId: '1:698342622624:web:ff4100280a5803619590c5',
+  };
+  const FB = 'https://www.gstatic.com/firebasejs/13.0.0/';
+  let cloud = null, user = null, pushT = null;
+  const gIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.6 3.9-5.5 3.9-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.8 3.3 14.6 2.3 12 2.3 6.7 2.3 2.4 6.6 2.4 12s4.3 9.7 9.6 9.7c5.5 0 9.2-3.9 9.2-9.4 0-.6-.1-1.1-.2-1.6H12Z"/></svg>';
+
+  // the newer day wins; on the same day the longer streak; "best" is the highest anyone saw
+  function mergeDaily(a, b) {
+    a = a || {}; b = b || {};
+    const pick = !a.last ? b : !b.last ? a : a.last > b.last ? a : b.last > a.last ? b : (a.streak || 0) >= (b.streak || 0) ? a : b;
+    return { ...pick, best: Math.max(a.best || 0, b.best || 0, pick.streak || 0) };
+  }
+  function mergeSort(a, b) {
+    a = a || {}; b = b || {};
+    const pick = (a.sorted || 0) >= (b.sorted || 0) ? a : b;
+    return { sorted: pick.sorted || 0, streak: pick.streak || 0, best: Math.max(a.best || 0, b.best || 0) };
+  }
+
+  function syncNote() {
+    if (!cloud) return '';
+    if (user) return 'Your streak is saved to your Google account.';
+    return '<button type="button" class="linkish" data-signin>Sign in with Google</button> to keep your streak on every device.';
+  }
+  function renderSync() {
+    const n = $('dsync');
+    if (n) n.innerHTML = syncNote();
+    const b = $('acctBtn'), menu = $('acctMenu');
+    if (!cloud) { b.hidden = true; return; }
+    b.hidden = false;
+    if (user) {
+      b.innerHTML = user.photoURL
+        ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">`
+        : `<span class="initial">${esc((user.displayName || user.email || '?')[0].toUpperCase())}</span>`;
+      b.title = 'Signed in as ' + (user.displayName || user.email);
+      b.setAttribute('aria-label', b.title);
+      b.classList.add('in');
+      menu.querySelector('.who').innerHTML = `<b>${esc(user.displayName || '')}</b><span>${esc(user.email || '')}</span>`;
+    } else {
+      b.innerHTML = `${gIcon}<span class="t">Sign in</span>`;
+      b.title = 'Sign in with Google to keep your streak on every device';
+      b.setAttribute('aria-label', b.title);
+      b.classList.remove('in');
+      menu.hidden = true;
+    }
+  }
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-signin]')) signIn();
+    const menu = $('acctMenu');
+    if (!menu.hidden && !e.target.closest('#acctMenu, #acctBtn')) menu.hidden = true;
+  });
+  $('acctBtn').onclick = () => { if (user) $('acctMenu').hidden = !$('acctMenu').hidden; else signIn(); };
+  $('signOutBtn').onclick = async () => {
+    $('acctMenu').hidden = true;
+    try { await cloud.signOut(cloud.auth); toast('Signed out. Your streak stays on this browser too.'); } catch (e) {}
+  };
+
+  async function signIn() {
+    if (!cloud) return;
+    const provider = new cloud.GoogleAuthProvider();
+    try { await cloud.signInWithPopup(cloud.auth, provider); }
+    catch (e) {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        try { await cloud.signInWithRedirect(cloud.auth, provider); } catch (e2) { toast('Sign-in failed. Please try again.'); }
+      } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+        console.warn('sign-in', e); toast('Sign-in failed. Please try again.');
+      }
+    }
+  }
+
+  /** Save this browser's streak and score to the signed-in account (debounced). */
+  function pushCloud() {
+    if (!cloud || !user) return;
+    clearTimeout(pushT);
+    const uid = user.uid;
+    pushT = setTimeout(async () => {
+      try {
+        await cloud.setDoc(cloud.doc(cloud.db, 'users', uid), {
+          daily: store.get('prep:daily', {}), sort: { sorted: score.sorted, streak: score.streak, best: score.best },
+          updatedAt: cloud.serverTimestamp(),
+        }, { merge: true });
+      } catch (e) { console.warn('sync', e); toast("Couldn't save your streak right now."); }
+    }, 600);
+  }
+  /** On sign-in: combine the account's copy with this browser's, keep both in step. */
+  async function pullCloud(u) {
+    try {
+      const snap = await cloud.getDoc(cloud.doc(cloud.db, 'users', u.uid));
+      const remote = snap.exists() ? snap.data() : {};
+      store.set('prep:daily', mergeDaily(store.get('prep:daily', {}), remote.daily));
+      Object.assign(score, mergeSort(score, remote.sort));
+      store.set('prep:sort', score);
+      showScore();
+      if (DATA) renderDaily(todays());
+      pushCloud();
+    } catch (e) { console.warn('sync', e); toast("Signed in, but your streak couldn't be loaded."); }
+  }
+
+  const whenIdle = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 2500 }) : setTimeout(fn, 1200));
+  whenIdle(async () => {
+    try {
+      const [app, auth, fs] = await Promise.all(['firebase-app', 'firebase-auth', 'firebase-firestore-lite'].map(m => import(FB + m + '.js')));
+      const fbApp = app.initializeApp(FIREBASE);
+      cloud = { ...auth, ...fs, auth: auth.getAuth(fbApp), db: fs.getFirestore(fbApp) };
+      renderSync();
+      cloud.onAuthStateChanged(cloud.auth, u => {
+        const was = user && user.uid;
+        user = u;
+        renderSync();
+        if (u && u.uid !== was) pullCloud(u);
+      });
+    } catch (e) { console.warn('Google sign-in unavailable', e); } // offline or blocked: the hub works as a guest
+  });
+
+  const start = readUrl();
+  show(start.key, start.sub, start.hash);
+  if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+})();
+</script>
+</body>
+</html>
