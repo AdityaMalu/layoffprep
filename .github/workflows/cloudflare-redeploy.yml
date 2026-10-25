@@ -1,0 +1,15 @@
+name: Redeploy Cloudflare site
+
+on:
+  schedule:
+    - cron: "37 3 * * *" # pick up changes in the tool repos
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the Cloudflare Pages deploy hook
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: curl -fsS -X POST "$HOOK" > /dev/null
