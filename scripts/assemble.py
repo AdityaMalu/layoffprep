@@ -6,7 +6,7 @@ Each tool argument is the folder holding that tool's built, ready-to-serve files
 """
 import argparse, os, shutil, sys
 
-HUB_FILES = ["index.html", "data.json", "sw.js", "og.png", "robots.txt", "sitemap.xml"]
+HUB_FILES = ["index.html", "data.json", "sw.js", "og.png", "robots.txt", "sitemap.xml", "google732466c2c1f96fdd.html"]
 TOOLS = {"algoscope": "algoscope", "java": "java-visualizer", "db": "DBVisualizer", "os": "OSVisualizer", "backpressure": "backpressure"}
 SKIP = shutil.ignore_patterns(".git", ".github", "node_modules", "__pycache__", "serve.py", "tools", "*.md")
 
