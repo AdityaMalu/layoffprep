@@ -12,4 +12,7 @@ jobs:
       - name: Trigger the Cloudflare Pages deploy hook
         env:
           HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
-        run: curl -fsS -X POST "$HOOK" > /dev/null
+        run: |
+          url=$(printf '%s' "$HOOK" | grep -o 'https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/[A-Za-z0-9-]*' | head -n1)
+          test -n "$url" || { echo "CF_DEPLOY_HOOK does not hold a deploy hook URL"; exit 1; }
+          curl -fsS -X POST "$url" > /dev/null
