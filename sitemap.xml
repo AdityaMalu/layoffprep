@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://layoffprep.pages.dev/</loc></url>
+  <url><loc>https://layoffprep.pages.dev/leetcode/</loc></url>
   <url><loc>https://layoffprep.pages.dev/java-visualizer/</loc></url>
   <url><loc>https://layoffprep.pages.dev/DBVisualizer/</loc></url>
   <url><loc>https://layoffprep.pages.dev/OSVisualizer/</loc></url>

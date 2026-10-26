@@ -148,6 +148,19 @@
   .demo .ok, .demo .note b.ok { color: var(--ok); }
   .demo .bad, .demo .note b.bad { color: var(--bad); }
 
+  /* leetcode by company */
+  .lcl { margin-top: 12px; }
+  .lcr { display: grid; grid-template-columns: 16px minmax(0, 1fr) 20px 56px; gap: 10px; align-items: center; padding: 7px 0; border-top: 1px solid var(--line); }
+  .lcr:first-child { border-top-color: transparent; }
+  .lcr .bx { width: 14px; height: 14px; border: 1.5px solid var(--soft); border-radius: 4px; transition: background .25s, border-color .25s; }
+  .lcr.done .bx { background: var(--ok); border-color: var(--ok); }
+  .lcr .nm { color: var(--bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lcr.done .nm { color: var(--soft); text-decoration: line-through; }
+  .lcr .df { font-weight: 500; text-align: center; }
+  .lcr .df.E { color: var(--ok); } .lcr .df.M { color: var(--accent); } .lcr .df.H { color: var(--bad); }
+  .lcr .fq { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .lcr .fq i { display: block; height: 100%; background: var(--soft); }
+
   /* binary search */
   .arr { position: relative; margin-top: 44px; --gap: 6px; }
   .cells { display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--gap); }
@@ -475,8 +488,8 @@
         <div>
           <p class="kicker">Backend interview prep</p>
           <h1>Interview prep, <span>step by step</span></h1>
-          <p class="lede">Six tools I built while preparing for backend interviews: DSA, Java, databases, operating systems, system design and machine coding. Each one stays a separate app with its own repo, and they all open here with shareable links.</p>
-          <noscript><ul><li><a href="algoscope/">AlgoScope</a>: Step-by-step animated traces of 159 DSA interview problems, recorded from real Java runs, with Python and C++ versions.</li><li><a href="java-visualizer/">Java Concepts Stepper</a>: Debugger-style walkthroughs of the JVM, collections, OOP and design patterns, concurrency, Spring and JPA, with a quiz after every topic.</li><li><a href="DBVisualizer/">DB Concepts Stepper</a>: 71 database topics from SQL to distributed systems, with runnable SQLite examples, auto-checked exercises and quizzes.</li><li><a href="OSVisualizer/">OS Concepts Stepper</a>: 59 operating-system topics from system calls to containers, with in-browser scheduling, paging, disk and deadlock simulators.</li><li><a href="backpressure/">Backpressure: System Design</a>: A 12-week system design course with a live traffic simulator: load balancers, caches, queues and databases, with 29 lessons and labs.</li></ul><p>The hub needs JavaScript; each tool above also works on its own page.</p></noscript>
+          <p class="lede">Seven tools I built while preparing for backend interviews: DSA, company-wise LeetCode lists, Java, databases, operating systems, system design and machine coding. Each one stays a separate app with its own repo, and they all open here with shareable links.</p>
+          <noscript><ul><li><a href="leetcode/">LeetCode by Company</a>: Company-wise LeetCode lists for 423 companies, sorted by how often each one asks a problem.</li><li><a href="algoscope/">AlgoScope</a>: Step-by-step animated traces of 159 DSA interview problems, recorded from real Java runs, with Python and C++ versions.</li><li><a href="java-visualizer/">Java Concepts Stepper</a>: Debugger-style walkthroughs of the JVM, collections, OOP and design patterns, concurrency, Spring and JPA, with a quiz after every topic.</li><li><a href="DBVisualizer/">DB Concepts Stepper</a>: 71 database topics from SQL to distributed systems, with runnable SQLite examples, auto-checked exercises and quizzes.</li><li><a href="OSVisualizer/">OS Concepts Stepper</a>: 59 operating-system topics from system calls to containers, with in-browser scheduling, paging, disk and deadlock simulators.</li><li><a href="backpressure/">Backpressure: System Design</a>: A 12-week system design course with a live traffic simulator: load balancers, caches, queues and databases, with 29 lessons and labs.</li></ul><p>The hub needs JavaScript; each tool above also works on its own page.</p></noscript>
           <div class="sortbar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a1.5 1.5 0 0 1 3 0v5M12 10V4a1.5 1.5 0 0 1 3 0v6M15 10V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L3.5 14a1.5 1.5 0 0 1 2.3-1.9L9 15V8a1.5 1.5 0 0 1 3 0"/></svg>
             <span id="sortHint">Drag the floating concepts onto the tool they belong to.</span>
@@ -502,6 +515,9 @@
     { key: 'algo', name: 'AlgoScope', short: 'Algo', path: '/algoscope/', repo: 'AdityaMalu/algoscope',
       blurb: 'Animated traces of 159 DSA interview problems, recorded from real Java runs, with Python and C++ versions.',
       stat: 'Arrays · graphs · DP · trees · and more' },
+    { key: 'lc', name: 'LeetCode', short: 'LC', full: 'LeetCode by Company', path: '/leetcode/', repo: 'AdityaMalu/layoffprep',
+      blurb: 'Company-wise LeetCode lists for 423 companies, sorted by how often each one asks a problem, with a Start here list and tick-off progress.',
+      stat: 'Amazon · Microsoft · Google · and 420 more' },
     { key: 'java', name: 'Java Stepper', short: 'Java', full: 'Java Concepts Stepper', path: '/java-visualizer/', repo: 'AdityaMalu/java-visualizer',
       blurb: 'Debugger-style walkthroughs of the JVM, collections, OOP and patterns, concurrency, Spring and JPA.',
       stat: 'Quiz after every topic' },
@@ -719,6 +735,35 @@
             bar.style.background = hot ? 'var(--bad)' : warm ? '#c98a2b' : 'var(--ok)';
             wires.forEach(w => { w.className = 'wire' + (w.classList.contains('w2') ? ' w2' : '') + (f.wire ? ' ' + f.wire : ''); });
             el.querySelector('.p99').textContent = f.p99;
+            el.querySelector('.note').innerHTML = f.note;
+          };
+        },
+      };
+    })(),
+
+    lc: (() => {
+      const P = [['Two Sum', 'E', 100], ['LRU Cache', 'M', 97], ['Merge Intervals', 'M', 92], ['Number of Islands', 'M', 89], ['Trapping Rain Water', 'H', 85], ['3Sum', 'M', 81], ['Group Anagrams', 'M', 77]];
+      const frames = [];
+      for (let k = 0; k < 4; k++) {
+        frames.push({ k, tick: false, note: k ? 'The next most-asked problem moves up' : 'Start with the problem Amazon asks most', ms: 1300 });
+        frames.push({ k, tick: true, note: `<b class="ok">${P[k][0]}</b> ticked off`, ms: 1000 });
+      }
+      return {
+        frames, still: 2,
+        build(el) {
+          el.append(h(`<div class="cap"><span>Start here · Amazon</span><span class="r">last 6 months</span></div>
+            <div class="lcl">${[0, 1, 2, 3].map(() => '<div class="lcr"><span class="bx"></span><span class="nm"></span><span class="df"></span><span class="fq"><i></i></span></div>').join('')}</div>
+            <div class="note"></div>`));
+          const rows = [...el.querySelectorAll('.lcr')];
+          return f => {
+            rows.forEach((r, j) => {
+              const p = P[f.k + j];
+              r.className = 'lcr' + (j === 0 && f.tick ? ' done' : '');
+              r.querySelector('.nm').textContent = p[0];
+              r.querySelector('.df').textContent = p[1];
+              r.querySelector('.df').className = 'df ' + p[1];
+              r.querySelector('.fq i').style.width = p[2] + '%';
+            });
             el.querySelector('.note').innerHTML = f.note;
           };
         },
@@ -1054,8 +1099,10 @@
     // Backpressure keeps passed labs under backpressure.v1 → completed (same origin, so readable here)
     const sdDone = Object.keys((store.get('backpressure.v1', {}) || {}).completed || {}).length;
     const sdTotal = ((DATA.steppers.sd || []).length) || 29;
+    let lcTicked = 0; try { lcTicked = Object.keys(JSON.parse(localStorage.getItem('lc-company-ticks') || '{}')).length; } catch (e) {}
     const tiles = [
       { key: 'algo', f: viewed / nAlgo, n: viewed, of: nAlgo, lbl: 'problems traced', sub: 'in AlgoScope' },
+      { key: 'lc', f: lcTicked / 3396, n: lcTicked, of: 3396, lbl: 'LeetCode problems ticked', sub: 'across all companies' },
       { key: 'java', f: jv.quizzed / jv.total, n: jv.quizzed, of: jv.total, lbl: 'Java topics quizzed', sub: `${jv.aced} aced` },
       { key: 'db', f: db.quizzed / db.total, n: db.quizzed, of: db.total, lbl: 'DB topics quizzed', sub: `${db.aced} aced · ${ex} exercises solved` },
       { key: 'os', f: os.total ? os.quizzed / os.total : 0, n: os.quizzed, of: os.total || 59, lbl: 'OS topics quizzed', sub: `${os.aced} aced · ${osEx} exercises solved` },
@@ -1068,7 +1115,7 @@
       const what = titleFor(last.key, last.sub || '', last.hash || '');
       cont = `<button type="button" class="cont" id="contBtn">Continue: ${esc(byKey[last.key].name)}${what ? ' · ' + esc(what) : ''} →</button>`;
     }
-    el.innerHTML = `<div class="phead"><h2>Your progress</h2><span class="muted">from all six tools, saved in this browser</span>${cont}</div>
+    el.innerHTML = `<div class="phead"><h2>Your progress</h2><span class="muted">from all seven tools, saved in this browser</span>${cont}</div>
       <div class="tiles">${tiles.map(t => `<button type="button" class="tile" data-key="${t.key}">${ring(t.f)}
         <span><span class="n">${t.n}<small> / ${t.of}</small></span><br><span class="lbl">${t.lbl}</span><br><span class="sub">${esc(t.sub)}</span></span></button>`).join('')}</div>`;
     el.querySelectorAll('.tile').forEach(b => b.onclick = () => show(b.dataset.key));

@@ -7,6 +7,7 @@ Each tool argument is the folder holding that tool's built, ready-to-serve files
 import argparse, os, shutil, sys
 
 HUB_FILES = ["index.html", "data.json", "sw.js", "og.png", "robots.txt", "sitemap.xml", "google732466c2c1f96fdd.html", "_headers"]
+HUB_DIRS = ["leetcode"]
 TOOLS = {"algoscope": "algoscope", "java": "java-visualizer", "db": "DBVisualizer", "os": "OSVisualizer", "backpressure": "backpressure"}
 SKIP = shutil.ignore_patterns(".git", ".github", "node_modules", "__pycache__", "serve.py", "tools", "*.md")
 
@@ -22,6 +23,8 @@ if os.path.isdir(args.out):
 os.makedirs(args.out)
 for f in HUB_FILES:
     shutil.copy(os.path.join(root, f), args.out)
+for d in HUB_DIRS:
+    shutil.copytree(os.path.join(root, d), os.path.join(args.out, d))
 for arg, folder in TOOLS.items():
     src = getattr(args, arg)
     if not os.path.isfile(os.path.join(src, "index.html")):
